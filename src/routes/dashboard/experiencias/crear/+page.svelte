@@ -3,6 +3,18 @@
 	import { toast } from 'svelte-sonner';
 	import { supabase } from '$lib/supabaseClient';
 	import { optimizarImagenes } from '$lib/helpers/imageOptimizer';
+	import type { chabitacion, dhabitacion } from '$lib/services/habitacionesService';
+
+	interface Habitacion {
+		nombre: string;
+		habitacion_descripcion: string;
+		precioPersona: number;
+		precioCuarto: number;
+		cantidad_habitacion: number;
+		capacidad: number;
+		imagenesNuevas: File[];
+		previewsNuevas: string[];
+	}
 
 	let { data }: { data: PageData } = $props();
 	let { ubicaciones } = data;
@@ -29,6 +41,9 @@
 	let imagenesNuevas = $state<File[]>([]);
 	let previewsNuevas = $state<string[]>([]);
 	let optimizando = $state(false);
+
+	// Habitaciones
+	let habitaciones = $state<Habitacion[]>([]);
 
 	// Caracteres restantes para descripción larga
 	let caracteresRestantes = $derived(2000 - descripcionLarga.length);
@@ -85,6 +100,120 @@
 		imagenesNuevas = imagenesNuevas.filter((_, i) => i !== index);
 		previewsNuevas = previewsNuevas.filter((_, i) => i !== index);
 		toast.success('Imagen eliminada');
+	}
+
+	// FUNCIONES DE HABITACIONES
+
+	// Agregar nueva habitación
+	function agregarHabitacion() {
+		habitaciones = [...habitaciones, {
+			nombre: '',
+			habitacion_descripcion: '',
+			precioPersona: 0,
+			precioCuarto: 0,
+			cantidad_habitacion: 1,
+			capacidad: 1,
+			imagenesNuevas: [],
+			previewsNuevas: []
+		}];
+		toast.success('Habitación agregada');
+	}
+
+	// Eliminar habitación
+	function eliminarHabitacion(index: number) {
+		habitaciones = habitaciones.filter((_, i) => i !== index);
+		toast.success('Habitación eliminada');
+	}
+
+	// Manejar imágenes de habitación
+	async function manejarImagenesHabitacion(event: Event, indexHabitacion: number) {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || input.files.length === 0) return;
+
+		const archivos = Array.from(input.files);
+		
+		const archivosValidos = archivos.filter(file => file.type.startsWith('image/'));
+		if (archivosValidos.length !== archivos.length) {
+			toast.error('Solo se permiten archivos de imagen');
+			return;
+		}
+
+		try {
+			optimizando = true;
+			
+			const imagenesOptimizadas = await optimizarImagenes(archivosValidos);
+			
+			// Actualizar habitación específica
+			habitaciones[indexHabitacion].imagenesNuevas = [
+				...habitaciones[indexHabitacion].imagenesNuevas, 
+				...imagenesOptimizadas
+			];
+
+			// Crear previews
+			const nuevosPreviews = await Promise.all(
+				imagenesOptimizadas.map(file => {
+					return new Promise<string>((resolve) => {
+						const reader = new FileReader();
+						reader.onload = (e) => resolve(e.target?.result as string);
+						reader.readAsDataURL(file);
+					});
+				})
+			);
+
+			habitaciones[indexHabitacion].previewsNuevas = [
+				...habitaciones[indexHabitacion].previewsNuevas, 
+				...nuevosPreviews
+			];
+			
+			toast.success(`${imagenesOptimizadas.length} imagen(es) agregada(s) a la habitación`);
+		} catch (error) {
+			console.error('Error procesando imágenes:', error);
+			toast.error('Error al procesar las imágenes');
+		} finally {
+			optimizando = false;
+			input.value = '';
+		}
+	}
+
+	// Eliminar imagen de habitación
+	function eliminarImagenHabitacion(indexHabitacion: number, indexImagen: number) {
+		habitaciones[indexHabitacion].imagenesNuevas = habitaciones[indexHabitacion].imagenesNuevas.filter((_, i) => i !== indexImagen);
+		habitaciones[indexHabitacion].previewsNuevas = habitaciones[indexHabitacion].previewsNuevas.filter((_, i) => i !== indexImagen);
+		toast.success('Imagen eliminada');
+	}
+
+	// Subir imágenes de habitación a Storage
+	async function subirImagenesHabitacion(imagenesArchivos: File[]): Promise<string[]> {
+		if (imagenesArchivos.length === 0) return [];
+
+		const urlsPublicas: string[] = [];
+
+		for (const file of imagenesArchivos) {
+			const timestamp = Date.now();
+			const random = Math.random().toString(36).substring(2, 9);
+			const extension = file.name.split('.').pop();
+			const nombreArchivo = `habitacion_${timestamp}_${random}.${extension}`;
+
+			const { data, error } = await supabase.storage
+				.from('imagenesExperiencias')
+				.upload(nombreArchivo, file, {
+					cacheControl: '3600',
+					upsert: false
+				});
+
+			if (error) {
+				console.error('Error subiendo imagen de habitación:', error);
+				throw error;
+			}
+
+			const { data: urlData } = supabase.storage
+				.from('imagenesExperiencias')
+				.getPublicUrl(nombreArchivo);
+
+			urlsPublicas.push(urlData.publicUrl);
+		}
+
+		return urlsPublicas;
 	}
 
 	// Subir imágenes a Supabase Storage
@@ -159,7 +288,7 @@
 			formData.append('queIncluye', queIncluye);
 			formData.append('imagenes', JSON.stringify(urlsImagenes));
 
-			// 4. Enviar al servidor
+			// 4. Enviar al servidor para crear experiencia
 			const response = await fetch(form.action, {
 				method: 'POST',
 				body: formData
@@ -172,8 +301,61 @@
 			cargando = false;
 
 			// Verificar respuesta
-			if (result.type === 'success' || result.success) {
-				toast.success('Experiencia creada correctamente');
+			if (result.type === 'success') {
+				let parseData = JSON.parse(result.data);
+
+				const idExperienciaCreada = parseData[4]; //El ID viene en data[4]
+				
+				// 5. Si hay habitaciones, crearlas
+				console.log('🏨 Habitaciones a crear:', habitaciones, 'id experiencia', idExperienciaCreada);
+				if (habitaciones.length > 0 && idExperienciaCreada) {
+					toast.info('Creando habitaciones...');
+					try {
+						// Enviar habitaciones al servidor
+						const habitacionesData = await Promise.all(
+							habitaciones.map(async (hab) => {
+								// Subir imágenes de la habitación
+								let urlsImagenesHab: string[] = [];
+								if (hab.imagenesNuevas.length > 0) {
+									urlsImagenesHab = await subirImagenesHabitacion(hab.imagenesNuevas);
+								}
+								
+								return {
+									nombre: hab.nombre,
+									habitacion_descripcion: hab.habitacion_descripcion,
+									precioPersona: hab.precioPersona,
+									precioCuarto: hab.precioCuarto,
+									cantidad_habitacion: hab.cantidad_habitacion,
+									capacidad: hab.capacidad,
+									imagenes: urlsImagenesHab,
+									idexperiencia: idExperienciaCreada
+								};
+							})
+						);
+
+						// Enviar habitaciones al servidor
+						const habitacionesFormData = new FormData();
+						habitacionesFormData.append('habitaciones', JSON.stringify(habitacionesData));
+
+						const habitacionesResponse = await fetch('?/crearHabitaciones', {
+							method: 'POST',
+							body: habitacionesFormData
+						});
+
+						const habitacionesResult = await habitacionesResponse.json();
+						
+						if (habitacionesResult.type === 'success') {
+							toast.success(`Experiencia y ${habitaciones.length} habitación(es) creadas correctamente`);
+						} else {
+							toast.warning('Experiencia creada pero hubo error creando habitaciones');
+						}
+					} catch (error) {
+						console.error('Error creando habitaciones:', error);
+						toast.warning('Experiencia creada pero hubo error creando habitaciones');
+					}
+				} else {
+					toast.success('Experiencia creada correctamente');
+				}
 				
 				// Limpiar formulario
 				titulo = '';
@@ -189,6 +371,7 @@
 				queIncluye = '';
 				imagenesNuevas = [];
 				previewsNuevas = [];
+				habitaciones = [];
 				
 				// Opcional: Redirigir a lista
 				// window.location.href = '/dashboard/experiencias/modificar';
@@ -507,6 +690,216 @@
 				<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
 					<p>No hay imágenes agregadas</p>
 					<p class="text-sm mt-1">Agrega imágenes para la galería de la experiencia</p>
+				</div>
+			{/if}
+		</div>
+
+		<!-- SECCIÓN: HABITACIONES -->
+		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
+			<div class="flex justify-between items-center mb-4 pb-2 border-b border-green-700">
+				<h2 class="text-xl font-bold text-white">
+					🏠 Habitaciones
+				</h2>
+				<button
+					type="button"
+					onclick={agregarHabitacion}
+					disabled={cargando}
+					class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
+						font-medium transition shadow-sm disabled:opacity-50 flex items-center gap-2"
+				>
+					➕ Agregar Habitación
+				</button>
+			</div>
+
+			{#if habitaciones.length === 0}
+				<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
+					<p>No hay habitaciones agregadas</p>
+					<p class="text-sm mt-1">Las habitaciones son opcionales</p>
+				</div>
+			{:else}
+				<div class="space-y-6">
+					{#each habitaciones as habitacion, index}
+						<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4">
+							<!-- Header de la habitación -->
+							<div class="flex justify-between items-center mb-4">
+								<h3 class="text-lg font-semibold text-white">
+									Habitación #{index + 1}
+								</h3>
+								<button
+									type="button"
+									onclick={() => eliminarHabitacion(index)}
+									disabled={cargando}
+									class="px-3 py-1 bg-red-700 hover:bg-red-600 text-white rounded 
+										text-sm transition disabled:opacity-50"
+								>
+									🗑️ Eliminar
+								</button>
+							</div>
+
+							<!-- Campos de la habitación -->
+							<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+								<!-- Nombre -->
+								<div>
+									<label class="block text-sm font-medium text-neutral-300 mb-2">
+										Nombre <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="text"
+										bind:value={habitacion.nombre}
+										disabled={cargando}
+										placeholder="Ej: Habitación Doble"
+										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+											rounded-lg text-white focus:outline-none focus:ring-2 
+											focus:ring-green-600 disabled:opacity-50"
+									/>
+								</div>
+
+								<!-- Precio por Persona -->
+								<div>
+									<label class="block text-sm font-medium text-neutral-300 mb-2">
+										Precio por Persona <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="number"
+										bind:value={habitacion.precioPersona}
+										disabled={cargando}
+										min="0"
+										step="0.01"
+										placeholder="0.00"
+										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+											rounded-lg text-white focus:outline-none focus:ring-2 
+											focus:ring-green-600 disabled:opacity-50"
+									/>
+								</div>
+
+								<!-- Precio por Cuarto -->
+								<div>
+									<label class="block text-sm font-medium text-neutral-300 mb-2">
+										Precio por Cuarto <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="number"
+										bind:value={habitacion.precioCuarto}
+										disabled={cargando}
+										min="0"
+										step="0.01"
+										placeholder="0.00"
+										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+											rounded-lg text-white focus:outline-none focus:ring-2 
+											focus:ring-green-600 disabled:opacity-50"
+									/>
+								</div>
+
+								<!-- Cantidad de Habitaciones -->
+								<div>
+									<label class="block text-sm font-medium text-neutral-300 mb-2">
+										Cantidad de Habitaciones <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="number"
+										bind:value={habitacion.cantidad_habitacion}
+										disabled={cargando}
+										min="1"
+										placeholder="1"
+										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+											rounded-lg text-white focus:outline-none focus:ring-2 
+											focus:ring-green-600 disabled:opacity-50"
+									/>
+									<p class="text-xs text-neutral-400 mt-1">
+										Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo
+									</p>
+								</div>
+
+								<!-- Capacidad -->
+								<div>
+									<label class="block text-sm font-medium text-neutral-300 mb-2">
+										Capacidad (personas) <span class="text-red-500">*</span>
+									</label>
+									<input
+										type="number"
+										bind:value={habitacion.capacidad}
+										disabled={cargando}
+										min="1"
+										placeholder="1"
+										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+											rounded-lg text-white focus:outline-none focus:ring-2 
+											focus:ring-green-600 disabled:opacity-50"
+									/>
+								</div>
+							</div>
+
+							<!-- Descripción -->
+							<div class="mb-4">
+								<label class="block text-sm font-medium text-neutral-300 mb-2">
+									Descripción
+								</label>
+								<textarea
+									bind:value={habitacion.habitacion_descripcion}
+									disabled={cargando}
+									rows="3"
+									placeholder="Describe las características de la habitación..."
+									class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+										rounded-lg text-white focus:outline-none focus:ring-2 
+										focus:ring-green-600 disabled:opacity-50 resize-none"
+								></textarea>
+							</div>
+
+							<!-- Imágenes de la habitación -->
+							<div>
+								<label class="block text-sm font-medium text-neutral-300 mb-2">
+									Imágenes de la Habitación
+								</label>
+								
+								<label
+									class="inline-flex items-center px-4 py-2 bg-green-700/80 hover:bg-green-600 
+										text-white rounded-lg cursor-pointer transition font-medium text-sm"
+									class:opacity-50={cargando || optimizando}
+								>
+									{#if optimizando}
+										⚡ Optimizando...
+									{:else}
+										📸 Agregar Imágenes
+									{/if}
+									<input
+										type="file"
+										accept="image/*"
+										multiple
+										onchange={(e) => manejarImagenesHabitacion(e, index)}
+										disabled={cargando || optimizando}
+										class="hidden"
+									/>
+								</label>
+
+								<!-- Galería de imágenes de la habitación -->
+								{#if habitacion.previewsNuevas.length > 0}
+									<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+										{#each habitacion.previewsNuevas as preview, imgIndex}
+											<div class="relative group">
+												<img
+													src={preview}
+													alt="Habitación {index + 1} - Imagen {imgIndex + 1}"
+													class="w-full h-24 object-cover rounded border border-green-700/50"
+												/>
+												<button
+													type="button"
+													onclick={() => eliminarImagenHabitacion(index, imgIndex)}
+													disabled={cargando}
+													class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
+														transition flex items-center justify-center text-white text-sm"
+												>
+													🗑️
+												</button>
+											</div>
+										{/each}
+									</div>
+								{:else}
+									<p class="text-xs text-neutral-400 mt-2">
+										No hay imágenes para esta habitación
+									</p>
+								{/if}
+							</div>
+						</div>
+					{/each}
 				</div>
 			{/if}
 		</div>

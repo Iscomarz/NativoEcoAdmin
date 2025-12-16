@@ -1,6 +1,8 @@
 import type { Ubicacion } from '$lib/services/ubicacionesService';
 import { obtenerUbicaciones } from '$lib/services/ubicacionesService';
 import { crearExperiencia, obtenerExperienciaActiva } from '$lib/services/experienciasService';
+import { crearHabitacion } from '$lib/services/habitacionesService';
+import type { chabitacion, dhabitacion } from '$lib/services/habitacionesService';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 
@@ -79,9 +81,60 @@ export const actions: Actions = {
             console.log('📋 Detalle a crear:', detalleExperiencia);
 
             // Crear experiencia
-            await crearExperiencia(nuevaExperiencia, detalleExperiencia, locals.supabase);
+            const experienciaCreada = await crearExperiencia(nuevaExperiencia, detalleExperiencia, locals.supabase);
 
-            return { success: true, message: 'Experiencia creada correctamente' };
+            return {
+                success: true,
+                message: 'Experiencia creada correctamente',
+                data: { id: experienciaCreada.id },
+                idExperiencia: experienciaCreada.id
+            };
+        } catch (error) {
+            console.error('Error creando experiencia:', error);
+            return fail(500, { message: 'Error al crear la experiencia' });
+        }
+    },
+
+    crearHabitaciones: async ({ request, locals }) => {
+        try {
+            const formData = await request.formData();
+            const habitacionesJson = formData.get('habitaciones') as string;
+
+            if (!habitacionesJson) {
+                return fail(400, { message: 'No se recibieron habitaciones' });
+            }
+
+            const habitaciones = JSON.parse(habitacionesJson);
+
+            console.log('🏠 Creando', habitaciones.length, 'habitación(es)');
+
+            // Crear cada habitación
+            for (const hab of habitaciones) {
+                const nuevaHabitacion: chabitacion = {
+                    //id: 0, // Se asignará automáticamente
+                    nombre: hab.nombre,
+                    habitacion_descripcion: hab.habitacion_descripcion,
+                    precioPersona: hab.precioPersona,
+                    precioCuarto: hab.precioCuarto,
+                    imagenes: hab.imagenes,
+                    idexperiencia: hab.idexperiencia,
+                    cantidad_habitacion: hab.cantidad_habitacion
+                };
+
+                const detalleHabitacion: dhabitacion = {
+                    capacidad: hab.capacidad,
+                    id_chabitacion: 0, // Se asignará en el servicio
+                    conteo_capacidad: 0,
+                    id_estatus: 1 // Estado inicial (disponible)
+                };
+
+                await crearHabitacion(nuevaHabitacion, detalleHabitacion, locals.supabase);
+            }
+
+            return {
+                success: true,
+                message: `${habitaciones.length} habitación(es) creada(s) correctamente`
+            };
         } catch (error) {
             console.error('Error creando experiencia:', error);
             return fail(500, { message: 'Error al crear la experiencia' });

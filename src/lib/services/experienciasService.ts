@@ -76,7 +76,7 @@ export async function crearExperiencia(
             id_ubicacion: experiencia.id_ubicacion
         };
 
-        console.log('🔍 Insertando en cexperiencia:', experienciaData);
+        //console.log('🔍 Insertando en cexperiencia:', experienciaData);
 
         const { data, error } = await supabaseClient
             .from(TABLA_EXPERIENCIAS)
@@ -106,7 +106,11 @@ export async function crearExperiencia(
                 .from('dexperiencia')
                 .insert(detalleData);
 
-            if (detalleError) throw detalleError;
+            if (detalleError) {
+                console.error('Error creando detalle de experiencia:', detalleError);
+                throw detalleError;
+            }
+
             console.log('Detalle experiencia creado para id:', data.id);
         }
 
