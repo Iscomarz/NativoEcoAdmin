@@ -34,6 +34,7 @@
 	// Campos de detalle
 	let descripcionLarga = $state('');
 	let sede = $state('');
+	let link_whatsapp = $state('');
 	let actividades = $state('');
 	let queIncluye = $state('');
 
@@ -284,6 +285,7 @@
 			formData.append('activo', activo.toString());
 			formData.append('descripcionLarga', descripcionLarga);
 			formData.append('sede', sede);
+			formData.append('link_whatsapp', link_whatsapp);
 			formData.append('actividades', actividades);
 			formData.append('queIncluye', queIncluye);
 			formData.append('imagenes', JSON.stringify(urlsImagenes));
@@ -367,6 +369,7 @@
 				activo = false;
 				descripcionLarga = '';
 				sede = '';
+				link_whatsapp = '';
 				actividades = '';
 				queIncluye = '';
 				imagenesNuevas = [];
@@ -586,6 +589,21 @@
 							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
 								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
 							placeholder="Ej: Hotel Xcaret"
+						/>
+					</div>
+
+					<!-- Link WhatsApp -->
+					<div>
+						<label class="block text-sm font-medium text-white mb-2">
+							Link Grupo WhatsApp
+						</label>
+						<input
+							type="url"
+							bind:value={link_whatsapp}
+							disabled={cargando}
+							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
+								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							placeholder="https://chat.whatsapp.com/..."
 						/>
 					</div>
 				</div>

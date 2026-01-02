@@ -7,6 +7,7 @@ export interface DetalleExperiencia {
     actividades: string;
     queincluye: string;
     imagenes?: string[];
+    grupo_whatsapp?: string;
 }
 
 const TABLA_DETALLE = 'dexperiencia';

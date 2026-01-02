@@ -33,7 +33,7 @@
 			key: 'experiencias',
 			submenu: [
 				{ title: 'Crear Experiencia', path: '/dashboard/experiencias/crear' },
-				{ title: 'Modificar Experiencia', path: '/dashboard/experiencias/modificar' }
+				{ title: 'Gestionar Experiencia', path: '/dashboard/experiencias/modificar' }
 			]
 		},
 		{
