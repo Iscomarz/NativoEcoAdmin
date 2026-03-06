@@ -13,6 +13,7 @@ export interface Experiencia {
     capacidad: number;
     activo: boolean;
     id_ubicacion?: number;
+    portada_experiencia?: string;
     cubicacion?: Ubicacion;
     detalle_experiencia?: DetalleExperiencia;
 }
@@ -73,7 +74,8 @@ export async function crearExperiencia(
             fecha_fin: experiencia.fecha_fin,
             capacidad: experiencia.capacidad,
             activo: experiencia.activo,
-            id_ubicacion: experiencia.id_ubicacion
+            id_ubicacion: experiencia.id_ubicacion,
+            portada_experiencia: experiencia.portada_experiencia
         };
 
         //console.log('🔍 Insertando en cexperiencia:', experienciaData);

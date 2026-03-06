@@ -46,6 +46,10 @@
 	// Habitaciones
 	let habitaciones = $state<Habitacion[]>([]);
 
+	// Portada
+	let portadaNueva = $state<File | null>(null);
+	let previewPortada = $state<string>('');
+
 	// Caracteres restantes para descripción larga
 	let caracteresRestantes = $derived(2000 - descripcionLarga.length);
 
@@ -252,6 +256,35 @@
 		return urlsPublicas;
 	}
 
+	// Subir portada a Supabase Storage
+	async function subirPortadaAStorage(): Promise<string | null> {
+		if (!portadaNueva) return null;
+
+		const timestamp = Date.now();
+		const random = Math.random().toString(36).substring(2, 9);
+		const extension = portadaNueva.name.split('.').pop();
+		const nombreArchivo = `portada_${timestamp}_${random}.${extension}`;
+
+		const { data, error } = await supabase.storage
+			.from('imagenesExperiencias')
+			.upload(nombreArchivo, portadaNueva, {
+				cacheControl: '3600',
+				upsert: false
+			});
+
+		if (error) {
+			console.error('Error subiendo portada:', error);
+			throw error;
+		}
+
+		// Obtener URL pública
+		const { data: urlData } = supabase.storage
+			.from('imagenesExperiencias')
+			.getPublicUrl(nombreArchivo);
+
+		return urlData.publicUrl;
+	}
+
 	// Manejar envío del formulario
 	async function manejarSubmit(event: Event) {
 		event.preventDefault();
@@ -267,14 +300,21 @@
 				return;
 			}
 
-			// 2. Subir imágenes primero
+			// 2. Subir portada primero
+			let urlPortada: string | null = null;
+			if (portadaNueva) {
+				toast.info('Subiendo portada...');
+				urlPortada = await subirPortadaAStorage();
+			}
+
+			// 3. Subir imágenes de galería
 			let urlsImagenes: string[] = [];
 			if (imagenesNuevas.length > 0) {
 				toast.info('Subiendo imágenes...');
 				urlsImagenes = await subirImagenesAStorage();
 			}
 
-			// 3. Crear FormData con todos los datos
+			// 4. Crear FormData con todos los datos
 			const formData = new FormData();
 			formData.append('titulo', titulo);
 			formData.append('descripcion', descripcion);
@@ -289,6 +329,10 @@
 			formData.append('actividades', actividades);
 			formData.append('queIncluye', queIncluye);
 			formData.append('imagenes', JSON.stringify(urlsImagenes));
+			if (urlPortada) {
+				formData.append('portada_experiencia', urlPortada);
+			}
+
 
 			// 4. Enviar al servidor para crear experiencia
 			const response = await fetch(form.action, {
@@ -375,6 +419,8 @@
 				imagenesNuevas = [];
 				previewsNuevas = [];
 				habitaciones = [];
+				portadaNueva = null;
+				previewPortada = '';
 				
 				// Opcional: Redirigir a lista
 				// window.location.href = '/dashboard/experiencias/modificar';
@@ -413,6 +459,39 @@
 		}
 	}
 
+		// Manejar selección de portada
+	async function manejarPortada(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || input.files.length === 0) return;
+
+		const file = input.files[0];
+		if (!file.type.startsWith('image/')) {
+			toast.error('Solo se permiten archivos de imagen');
+			return;
+		}
+
+		try {
+			optimizando = true;
+			const [optimizada] = await optimizarImagenes([file]);
+			portadaNueva = optimizada;
+
+			// Crear preview
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewPortada = e.target?.result as string;
+			};
+			reader.readAsDataURL(optimizada);
+
+			toast.success('Portada optimizada');
+		} catch (error) {
+			console.error('Error procesando portada:', error);
+			toast.error('Error al procesar la portada');
+		} finally {
+			optimizando = false;
+			input.value = '';
+		}
+	}
+
 </script>
 
 <div class="space-y-6">
@@ -448,6 +527,60 @@
 							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
 						placeholder="Ej: Tour en Cenotes Mayas"
 					/>
+				</div>
+
+				<!-- PORTADA -->
+				<div class="lg:col-span-2">
+					<label class="block text-sm font-medium text-white mb-2">
+						Portada
+					</label>
+					
+					{#if previewPortada}
+						<div class="mb-4 relative">
+							<img
+								src={previewPortada}
+								alt="Preview Portada"
+								class="w-full h-48 object-cover rounded-lg border border-green-700"
+							/>
+							<button
+								type="button"
+								onclick={() => {
+									portadaNueva = null;
+									previewPortada = '';
+									toast.success('Portada eliminada');
+								}}
+								disabled={cargando}
+								class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 
+									disabled:opacity-50 transition"
+							>
+								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+								</svg>
+							</button>
+						</div>
+					{:else}
+					<label
+						class="block w-full h-48 border-2 border-dashed border-neutral-700 rounded-lg 
+							hover:border-green-700 cursor-pointer transition flex items-center justify-center"
+						class:opacity-50={cargando || optimizando}
+					>
+						<div class="text-center text-neutral-500">
+							{#if optimizando}
+								<div class="text-green-400">⚡ Optimizando...</div>
+							{:else}
+								<div>📸 Seleccionar Portada</div>
+								<div class="text-xs mt-1">Se optimizará automáticamente</div>
+							{/if}
+						</div>
+						<input
+							type="file"
+							accept="image/*"
+							onchange={manejarPortada}
+							disabled={cargando || optimizando}
+							class="hidden"
+						/>
+					</label>
+					{/if}
 				</div>
 
 				<!-- Ubicación -->
