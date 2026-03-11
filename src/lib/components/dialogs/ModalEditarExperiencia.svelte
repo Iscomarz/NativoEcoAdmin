@@ -48,6 +48,11 @@
 	let imagenesNuevas = $state<File[]>([]);
 	let previewsNuevas = $state<string[]>([]);
 
+	// Portada
+	let portadaExistente = $state<string>('');
+	let portadaNueva = $state<File | null>(null);
+	let previewPortada = $state<string>('');
+
 	// Inicializar valores de detalle
 	let descripcionLarga = $state('');
 	let sede = $state('');
@@ -66,6 +71,11 @@
 			// Cargar imágenes existentes
 			imagenesExistentes = experienciaSeleccionada.detalle_experiencia.imagenes || [];
 		}
+
+		// Cargar portada existente
+		portadaExistente = experienciaSeleccionada?.portada_experiencia || '';
+		portadaNueva = null;
+		previewPortada = '';
 
 		// Cargar habitaciones existentes
 		if (habitacionesProp && habitacionesProp.length > 0) {
@@ -191,6 +201,66 @@
 		return urlsSubidas;
 	}
 
+	// Manejar selección de portada
+	async function manejarPortada(event: Event) {
+		const input = event.target as HTMLInputElement;
+		if (!input.files || input.files.length === 0) return;
+
+		const file = input.files[0];
+		if (!file.type.startsWith('image/')) {
+			toast.error('Solo se permiten archivos de imagen');
+			return;
+		}
+
+		try {
+			optimizando = true;
+			const [optimizada] = await optimizarImagenes([file]);
+			portadaNueva = optimizada;
+
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewPortada = e.target?.result as string;
+			};
+			reader.readAsDataURL(optimizada);
+
+			toast.success('Portada optimizada');
+		} catch (error) {
+			console.error('Error procesando portada:', error);
+			toast.error('Error al procesar la portada');
+		} finally {
+			optimizando = false;
+			input.value = '';
+		}
+	}
+
+	// Subir portada a Supabase Storage
+	async function subirPortadaAStorage(): Promise<string | null> {
+		if (!portadaNueva) return null;
+
+		const timestamp = Date.now();
+		const random = Math.random().toString(36).substring(2, 9);
+		const extension = portadaNueva.name.split('.').pop();
+		const nombreArchivo = `portada_${experienciaSeleccionada.id}_${timestamp}_${random}.${extension}`;
+
+		const { data, error } = await supabase.storage
+			.from('imagenesExperiencias')
+			.upload(nombreArchivo, portadaNueva, {
+				cacheControl: '3600',
+				upsert: false
+			});
+
+		if (error) {
+			console.error('Error subiendo portada:', error);
+			throw error;
+		}
+
+		const { data: urlData } = supabase.storage
+			.from('imagenesExperiencias')
+			.getPublicUrl(nombreArchivo);
+
+		return urlData.publicUrl;
+	}
+
 	async function manejarSubmit(event: SubmitEvent) {
 		event.preventDefault();
 		cargando = true;
@@ -202,19 +272,30 @@
 			// 2. Combinar URLs existentes + nuevas
 			const todasLasImagenes = [...imagenesExistentes, ...urlsNuevas];
 			
-			// 3. Crear FormData con todos los datos
+			// 3. Subir portada si hay una nueva
+			let urlPortadaFinal: string | undefined = portadaExistente || undefined;
+			if (portadaNueva) {
+				toast.info('Subiendo portada...');
+				const urlNuevaPortada = await subirPortadaAStorage();
+				if (urlNuevaPortada) urlPortadaFinal = urlNuevaPortada;
+			}
+
+			// 4. Crear FormData con todos los datos
 			const form = event.target as HTMLFormElement;
 			const formData = new FormData(form);
 			
-			// 4. Agregar datos de detalle con imágenes
+			// 5. Agregar datos de detalle con imágenes
 			formData.set('imagenes', JSON.stringify(todasLasImagenes));
 			formData.set('descripcionLarga', descripcionLarga);
 			formData.set('sede', sede);
 			formData.set('grupo_whatsapp', link_whatsapp);
 			formData.set('actividades', actividades);
 			formData.set('queIncluye', queIncluye);
+			if (urlPortadaFinal) {
+				formData.set('portada_experiencia', urlPortadaFinal);
+			}
 			
-			// 5. Enviar al servidor
+			// 6. Enviar al servidor
 			const response = await fetch(form.action, {
 				method: 'POST',
 				body: formData
@@ -523,6 +604,85 @@
 				<!-- Tab General -->
 				<div class:hidden={tabActual !== 'general'}>
 					<div class="space-y-4">
+
+						<!-- PORTADA -->
+						<div>
+							<label class="block text-sm font-medium text-white mb-2">Portada</label>
+
+							{#if previewPortada || portadaExistente}
+								<div class="mb-3 relative">
+									<img
+										src={previewPortada || portadaExistente}
+										alt="Portada de la experiencia"
+										class="w-full h-48 object-cover rounded-lg border border-green-700"
+									/>
+									{#if previewPortada}
+										<span class="absolute top-2 left-2 bg-yellow-600 text-white text-xs px-2 py-0.5 rounded">Nueva</span>
+									{:else}
+										<span class="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">Guardada</span>
+									{/if}
+									<div class="absolute top-2 right-2 flex gap-2">
+										<!-- Cambiar portada -->
+										<label
+											title="Cambiar portada"
+											class="bg-neutral-700 hover:bg-neutral-600 text-white rounded-full p-2 cursor-pointer transition"
+											class:opacity-50={cargando || optimizando}
+										>
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6m-6 6l-2 2v2h2l2-2-2-2z" />
+											</svg>
+											<input
+												type="file"
+												accept="image/*"
+												onchange={manejarPortada}
+												disabled={cargando || optimizando}
+												class="hidden"
+											/>
+										</label>
+										<!-- Quitar portada -->
+										<button
+											type="button"
+											onclick={() => {
+												portadaNueva = null;
+												previewPortada = '';
+												portadaExistente = '';
+												toast.success('Portada eliminada');
+											}}
+											disabled={cargando}
+											title="Quitar portada"
+											class="bg-red-600 hover:bg-red-700 text-white rounded-full p-2 transition disabled:opacity-50"
+										>
+											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+											</svg>
+										</button>
+									</div>
+								</div>
+							{:else}
+								<label
+									class="block w-full h-40 border-2 border-dashed border-neutral-700 rounded-lg
+										hover:border-green-700 cursor-pointer transition flex items-center justify-center"
+									class:opacity-50={cargando || optimizando}
+								>
+									<div class="text-center text-neutral-500">
+										{#if optimizando}
+											<div class="text-green-400">⚡ Optimizando...</div>
+										{:else}
+											<div>📸 Seleccionar Portada</div>
+											<div class="text-xs mt-1">Se optimizará automáticamente</div>
+										{/if}
+									</div>
+									<input
+										type="file"
+										accept="image/*"
+										onchange={manejarPortada}
+										disabled={cargando || optimizando}
+										class="hidden"
+									/>
+								</label>
+							{/if}
+						</div>
+
 						<div>
 							<label class="block text-sm font-medium text-white mb-2">Título *</label>
 							<input

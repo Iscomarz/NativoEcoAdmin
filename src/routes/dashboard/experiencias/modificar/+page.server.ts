@@ -39,14 +39,16 @@ export const actions: Actions = {
             const formData = await request.formData();
             const id = Number(formData.get('id'));
 
-            const datosActualizados = {
+            const portadaExperiencia = formData.get('portada_experiencia') as string | null;
+            const datosActualizados: Record<string, any> = {
                 titulo: formData.get('titulo') as string,
                 descripcion: formData.get('descripcion') as string,
                 fecha_inicio: formData.get('fecha_inicio') as string,
                 fecha_fin: formData.get('fecha_fin') as string,
                 capacidad: Number(formData.get('capacidad')),
                 activo: formData.get('activo') === 'true',
-                id_ubicacion: Number(formData.get('id_ubicacion'))
+                id_ubicacion: Number(formData.get('id_ubicacion')),
+                portada_experiencia: portadaExperiencia || null
             };
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
