@@ -20,6 +20,13 @@ const supabase: Handle = async ({ event, resolve }) => {
         }
     );
 
+    event.locals.getUser = async () => {
+        const {
+            data: { user },
+        } = await event.locals.supabase.auth.getUser();
+        return user;
+    };
+
     event.locals.getSession = async () => {
         const {
             data: { session },
@@ -35,7 +42,7 @@ const supabase: Handle = async ({ event, resolve }) => {
 };
 
 const authGuard: Handle = async ({ event, resolve }) => {
-    const session = await event.locals.getSession();
+    const user = await event.locals.getUser();
     const url = new URL(event.request.url);
 
     // Rutas públicas
@@ -44,7 +51,7 @@ const authGuard: Handle = async ({ event, resolve }) => {
     }
 
     // Proteger dashboard
-    if (url.pathname.startsWith('/dashboard') && !session) {
+    if (url.pathname.startsWith('/dashboard') && !user) {
         throw redirect(303, '/login');
     }
 

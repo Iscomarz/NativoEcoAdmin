@@ -47,6 +47,7 @@ export const actions: Actions = {
                 fecha_fin: formData.get('fecha_fin') as string,
                 capacidad: Number(formData.get('capacidad')),
                 activo: formData.get('activo') === 'true',
+                oculto: formData.get('oculto') === 'true',
                 id_ubicacion: Number(formData.get('id_ubicacion')),
                 portada_experiencia: portadaExperiencia || null
             };
@@ -178,6 +179,23 @@ export const actions: Actions = {
         } catch (error) {
             console.error('Error manejando habitación:', error);
             return fail(500, { error: 'Error al procesar la habitación' });
+        }
+    },
+
+    eliminar: async ({ request, locals }) => {
+        try {
+            const formData = await request.formData();
+            const id = Number(formData.get('id'));
+
+            if (!id) return fail(400, { message: 'ID de experiencia no proporcionado' });
+
+            const { eliminarExperiencia } = await import('$lib/services/experienciasService');
+            await eliminarExperiencia(id, locals.supabase);
+
+            return { success: true, message: 'Experiencia y recursos asociados eliminados correctamente' };
+        } catch (error: any) {
+            console.error('Error eliminando experiencia:', error);
+            return fail(500, { message: error.message || 'Error al eliminar la experiencia' });
         }
     }
 };

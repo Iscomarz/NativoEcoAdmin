@@ -12,6 +12,7 @@ export interface Experiencia {
     fecha_fin: string;
     capacidad: number;
     activo: boolean;
+    oculto: boolean;
     id_ubicacion?: number;
     portada_experiencia?: string;
     cubicacion?: Ubicacion;
@@ -74,6 +75,7 @@ export async function crearExperiencia(
             fecha_fin: experiencia.fecha_fin,
             capacidad: experiencia.capacidad,
             activo: experiencia.activo,
+            oculto: experiencia.oculto,
             id_ubicacion: experiencia.id_ubicacion,
             portada_experiencia: experiencia.portada_experiencia
         };
@@ -130,7 +132,17 @@ export async function actualizarExperiencia(id: number, experiencia: Partial<Exp
     try {
         const { data, error } = await supabaseClient
             .from(TABLA_EXPERIENCIAS)
-            .update(experiencia)
+            .update({
+                titulo: experiencia.titulo,
+                descripcion: experiencia.descripcion,
+                fecha_inicio: experiencia.fecha_inicio,
+                fecha_fin: experiencia.fecha_fin,
+                capacidad: experiencia.capacidad,
+                activo: experiencia.activo,
+                oculto: experiencia.oculto,
+                id_ubicacion: experiencia.id_ubicacion,
+                portada_experiencia: experiencia.portada_experiencia
+            })
             .eq('id', id)
             .select()
             .single();
@@ -153,16 +165,94 @@ export async function actualizarExperiencia(id: number, experiencia: Partial<Exp
 }
 
 /**
- * Eliminar una experiencia
+ * Eliminar una experiencia completa (solo si no tiene reservas)
  */
-export async function eliminarExperiencia(id: number): Promise<void> {
+export async function eliminarExperiencia(id: number, supabaseClient: any): Promise<void> {
     try {
-        const { error } = await supabase
+        // 1. Verificar si existen reservas activas
+        const { count, error: countError } = await supabaseClient
+            .from('mreserva')
+            .select('*', { count: 'exact', head: true })
+            .eq('experiencia_id', id);
+
+        if (countError) throw countError;
+
+        if (count && count > 0) {
+            throw new Error(`No se puede eliminar la experiencia porque tiene ${count} reserva(s) asociada(s). Si deseas retirarla de la web, utiliza la opción "Ocultar".`);
+        }
+
+        console.log(`🗑️ Iniciando eliminación de experiencia ID: ${id}`);
+
+        // 2. Obtener imágenes para limpieza
+        const { data: exp } = await supabaseClient
+            .from(TABLA_EXPERIENCIAS)
+            .select('portada_experiencia')
+            .eq('id', id)
+            .single();
+
+        const { data: det } = await supabaseClient
+            .from('dexperiencia')
+            .select('imagenes')
+            .eq('idexperiencia', id)
+            .single();
+
+        const { data: habs } = await supabaseClient
+            .from('chabitacion')
+            .select('imagenes')
+            .eq('idexperiencia', id);
+
+        const allImages: string[] = [];
+        if (exp?.portada_experiencia) allImages.push(exp.portada_experiencia);
+        if (det?.imagenes) allImages.push(...det.imagenes);
+        if (habs) {
+            habs.forEach(h => {
+                if (h.imagenes) allImages.push(...h.imagenes);
+            });
+        }
+
+        // 3. Eliminar registros en orden
+        
+        // a. Detalle de habitaciones (dhabitacion)
+        const { data: habitaciones } = await supabaseClient
+            .from('chabitacion')
+            .select('id')
+            .eq('idexperiencia', id);
+        
+        if (habitaciones && habitaciones.length > 0) {
+            const ids = habitaciones.map(h => h.id);
+            await supabaseClient
+                .from('dhabitacion')
+                .delete()
+                .in('id_chabitacion', ids);
+        }
+
+        // b. Habitaciones (chabitacion)
+        await supabaseClient
+            .from('chabitacion')
+            .delete()
+            .eq('idexperiencia', id);
+
+        // c. Detalle experiencia (dexperiencia)
+        await supabaseClient
+            .from('dexperiencia')
+            .delete()
+            .eq('idexperiencia', id);
+
+        // d. Experiencia principal (cexperiencia)
+        const { error: deleteExpError } = await supabaseClient
             .from(TABLA_EXPERIENCIAS)
             .delete()
             .eq('id', id);
 
-        if (error) throw error;
+        if (deleteExpError) throw deleteExpError;
+
+        // 4. Limpiar storage
+        if (allImages.length > 0) {
+            const { eliminarArchivosStorage } = await import('$lib/helpers/supabaseHelpers');
+            await eliminarArchivosStorage('imagenesExperiencias', allImages);
+        }
+
+        console.log(`✅ Experiencia ${id} eliminada correctamente`);
     } catch (error) {
         console.error('Error eliminando experiencia:', error);
         throw error;

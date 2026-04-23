@@ -64,6 +64,60 @@
 		await recargarUbicaciones();
 	}
 
+	async function eliminarUbicacion(id: number, nombre: string) {
+		if (
+			!confirm(
+				`¿Estás seguro de eliminar la ubicación "${nombre}"? \n\n¡ADVERTENCIA! Se eliminarán de forma PERMANENTE todas las experiencias, habitaciones, reservas e IMÁGENES asociadas a esta ubicación.`
+			)
+		)
+			return;
+
+		try {
+			cargando = true;
+			const formData = new FormData();
+			formData.append('id_ubicacion', id.toString());
+
+			const response = await fetch('?/eliminar', {
+				method: 'POST',
+				body: formData
+			});
+
+			const result = await response.json();
+			
+			if (result.type === 'success' || result.success) {
+				toast.success('Ubicación y recursos asociados eliminados');
+				await recargarUbicaciones();
+			} else if (result.type === 'failure' || result.type === 'error') {
+				let message = 'Error al eliminar la ubicación';
+				
+				if (result.data) {
+					try {
+						const parsedData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+						if (Array.isArray(parsedData)) {
+							const stringMsg = parsedData.find(i => typeof i === 'string');
+							if (stringMsg) message = stringMsg;
+						} else if (parsedData.message) {
+							message = String(parsedData.message);
+						}
+					} catch (e) {
+						console.error('Error al parsear el mensaje de error:', e);
+					}
+				} else if (result.message) {
+					message = result.message;
+				}
+				
+				toast.error(String(message), { duration: 6000 });
+			} else {
+				toast.error('Error al procesar la eliminación');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			toast.error('Error al procesar la eliminación');
+		} finally {
+			cargando = false;
+		}
+	}
+
 </script>
 
 <div class="space-y-6">
@@ -103,14 +157,26 @@
 							<span class="px-3 py-1 text-xs font-semibold rounded-full {ubicacion.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
 								{ubicacion.activo ? 'Activo' : 'Inactivo'}
 							</span>
+							{#if ubicacion.oculto}
+								<span class="ml-2 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+									Oculto
+								</span>
+							{/if}
 						</td>
-						<td class="px-6 py-4 text-sm">
+						<td class="px-6 py-4 text-sm flex gap-2">
 							<button
 								onclick={() => seleccionarUbicacion(ubicacion)}
 								disabled={cargando}
 								class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition disabled:opacity-50"
 							>
 								Editar
+							</button>
+							<button
+								onclick={() => eliminarUbicacion(ubicacion.id_ubicacion, ubicacion.nombre_ubicacion)}
+								disabled={cargando}
+								class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition disabled:opacity-50"
+							>
+								Eliminar
 							</button>
 						</td>
 					</tr>

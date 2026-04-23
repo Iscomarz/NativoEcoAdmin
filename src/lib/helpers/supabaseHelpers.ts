@@ -77,3 +77,38 @@ export async function ejecutarConSesion<T>(
 
     return await operacion();
 }
+
+/**
+ * Extrae el nombre del archivo de una URL pública de Supabase Storage
+ */
+export function extraerNombreArchivo(url: string): string | null {
+    if (!url) return null;
+    try {
+        const parts = url.split('/');
+        return parts[parts.length - 1];
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * Elimina archivos de un bucket de Supabase Storage
+ */
+export async function eliminarArchivosStorage(bucket: string, urls: string[]): Promise<void> {
+    if (!urls || urls.length === 0) return;
+
+    // Filtrar URLs nulas o vacías y extraer nombres
+    const archivos = urls
+        .filter(url => url && typeof url === 'string')
+        .map(url => extraerNombreArchivo(url))
+        .filter((nome): nome is string => !!nome);
+
+    if (archivos.length === 0) return;
+
+    const { error } = await supabase.storage.from(bucket).remove(archivos);
+    if (error) {
+        console.error(`Error eliminando archivos de ${bucket}:`, error);
+    } else {
+        console.log(`✅ ${archivos.length} archivo(s) eliminado(s) de ${bucket}`);
+    }
+}

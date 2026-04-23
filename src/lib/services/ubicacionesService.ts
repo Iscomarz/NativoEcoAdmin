@@ -7,6 +7,7 @@ export interface Ubicacion {
     estado_ubicacion: string;
     pais_ubicacion: string;
     activo: boolean;
+    oculto: boolean;
     portada?: string[];
     detalle_ubicacion?: DUbicacion;
 }
@@ -81,6 +82,7 @@ export async function actualizarUbicacionConDetalle(
             estado_ubicacion: ubicacion.estado_ubicacion,
             pais_ubicacion: ubicacion.pais_ubicacion,
             activo: ubicacion.activo,
+            oculto: ubicacion.oculto,
             portada: ubicacion.portada
         };
 
@@ -161,6 +163,7 @@ export async function crearUbicacion(ubicacion: Omit<Ubicacion, 'id_ubicacion' |
             estado_ubicacion: ubicacion.estado_ubicacion,
             pais_ubicacion: ubicacion.pais_ubicacion,
             activo: ubicacion.activo,
+            oculto: ubicacion.oculto,
             portada: ubicacion.portada
         }
 
@@ -217,18 +220,58 @@ export async function actualizarUbicacion(id: number, ubicacion: Partial<Ubicaci
 }
 
 /**
- * Eliminar una ubicación
+ * Eliminar una ubicación completa (incluyendo sus experiencias asociadas, detalles e imágenes)
  */
-export async function eliminarUbicacion(id: number): Promise<void> {
+export async function eliminarUbicacion(id: number, supabaseClient: any): Promise<void> {
     try {
-        const { error } = await supabase
+        // 1. Obtener todas las experiencias asociadas
+        const { data: experiencias } = await supabaseClient
+            .from('cexperiencia')
+            .select('id')
+            .eq('id_ubicacion', id);
+
+        // 2. Eliminar cada experiencia
+        if (experiencias && experiencias.length > 0) {
+            const { eliminarExperiencia } = await import('./experienciasService');
+            for (const exp of experiencias) {
+                await eliminarExperiencia(exp.id, supabaseClient);
+            }
+        }
+
+        // 3. Obtener imágenes de la ubicación para limpiar Storage
+        const { data: ubi } = await supabaseClient
+            .from(TABLA_UBICACIONES)
+            .select('portada')
+            .eq('id_ubicacion', id)
+            .single();
+
+        const { data: ubiDet } = await supabaseClient
+            .from('dubicacion')
+            .select('imagenes')
+            .eq('id_ubicacion', id)
+            .single();
+
+        const allImages: string[] = [];
+        if (ubi?.portada) allImages.push(...ubi.portada);
+        if (ubiDet?.imagenes) allImages.push(...ubiDet.imagenes);
+
+        // 4. Borrar registros de ubicación
+        await supabaseClient.from('dubicacion').delete().eq('id_ubicacion', id);
+        
+        const { error: ubiError } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .delete()
-            .eq('id', id);
+            .eq('id_ubicacion', id);
 
-        if (error) throw error;
+        if (ubiError) throw ubiError;
+
+        // 5. Limpiar archivos del bucket
+        if (allImages.length > 0) {
+            const { eliminarArchivosStorage } = await import('$lib/helpers/supabaseHelpers');
+            await eliminarArchivosStorage('imagenesUbicaciones', allImages);
+        }
     } catch (error) {
-        console.error('Error eliminando ubicación:', error);
+        console.error('Error eliminando ubicación completa:', error);
         throw error;
     }
 }

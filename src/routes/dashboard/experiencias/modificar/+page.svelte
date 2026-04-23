@@ -82,6 +82,64 @@
 		await recargarExperiencias();
 	}
 
+	async function eliminarExperiencia(id: number, titulo: string) {
+		if (
+			!confirm(
+				`¿Estás seguro de eliminar la experiencia "${titulo}"? \n\n¡ADVERTENCIA! Se eliminarán de forma PERMANENTE sus detalles, habitaciones, reservas e IMÁGENES asociadas.`
+			)
+		)
+			return;
+
+		try {
+			cargando = true;
+			const formData = new FormData();
+			formData.append('id', id.toString());
+
+			const response = await fetch('?/eliminar', {
+				method: 'POST',
+				body: formData
+			});
+
+			const result = await response.json();
+			
+			if (result.type === 'success' || result.success) {
+				toast.success('Experiencia y recursos asociados eliminados');
+				await recargarExperiencias();
+			} else if (result.type === 'failure' || result.type === 'error') {
+				// SvelteKit serializa el error en result.data si es un failure
+				let message = 'Error al eliminar la experiencia';
+				
+				if (result.data) {
+					try {
+						// Si data es un string JSON (común en SvelteKit fail)
+						const parsedData = typeof result.data === 'string' ? JSON.parse(result.data) : result.data;
+						
+						// SvelteKit usa devalue. Buscamos el primer string en el array, que suele ser el mensaje
+						if (Array.isArray(parsedData)) {
+							const stringMsg = parsedData.find(i => typeof i === 'string');
+							if (stringMsg) message = stringMsg;
+						} else if (parsedData.message) {
+							message = String(parsedData.message);
+						}
+					} catch (e) {
+						console.error('Error al parsear el mensaje de error:', e);
+					}
+				} else if (result.message) {
+					message = result.message;
+				}
+				
+				toast.error(String(message), { duration: 6000 });
+			} else {
+				toast.error('Error al procesar la eliminación');
+			}
+		} catch (error) {
+			console.error('Error:', error);
+			toast.error('Error al procesar la eliminación');
+		} finally {
+			cargando = false;
+		}
+	}
+
 </script>
 
 <div class="space-y-6">
@@ -108,8 +166,16 @@
 						<td class="px-6 py-4 text-sm text-gray-300">{exp.cubicacion?.nombre_ubicacion || 'Sin ubicación'}</td>
 						<td class="px-6 py-4 text-sm text-white">{exp.capacidad}</td>
 						<td class="px-6 py-4">
-							<span class="px-3 py-1 text-xs font-semibold rounded-full {exp.activo ? 'bg-green-800 text-green-800' : 'bg-red-800 text-red-800'}"></span>
-								
+							<div class="flex flex-col gap-1">
+								<span class="px-3 py-1 text-xs font-semibold rounded-full w-fit {exp.activo ? 'bg-green-800/30 text-green-400 border border-green-700' : 'bg-red-800/30 text-red-400 border border-red-700'}">
+									{exp.activo ? 'Activa' : 'Inactiva'}
+								</span>
+								{#if exp.oculto}
+									<span class="px-3 py-1 text-xs font-semibold rounded-full w-fit bg-yellow-800/30 text-yellow-400 border border-yellow-700">
+										Oculta
+									</span>
+								{/if}
+							</div>
 						</td>
 						<td>
 							<div class="flex gap-2">
@@ -128,11 +194,18 @@
 									Dashboard
 								</button>
 								<button
-									onclick={() => seleccionarExperiencia(exp,"reservas")}
+									onclick={() => seleccionarExperiencia(exp, 'reservas')}
 									class="px-4 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition disabled:opacity-50 text-sm"
 									disabled={cargando}
 								>
 									Reservas
+								</button>
+								<button
+									onclick={() => eliminarExperiencia(exp.id!, exp.titulo)}
+									class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 text-sm"
+									disabled={cargando}
+								>
+									Eliminar
 								</button>
 							</div>
 						</td>

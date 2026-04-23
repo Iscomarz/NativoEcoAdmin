@@ -35,6 +35,7 @@
 	let estado_ubicacion = $state('');
 	let pais_ubicacion = $state('');
 	let activo = $state(false);
+	let oculto = $state(false);
 
 	// Campos de detalle
 	let descripcion_larga = $state('');
@@ -50,6 +51,7 @@
 			estado_ubicacion = '';
 			pais_ubicacion = '';
 			activo = false;
+			oculto = false;
 			portadaExistente = '';
 			portadaNueva = null;
 			previewPortada = '';
@@ -64,6 +66,7 @@
 			estado_ubicacion = ubicacionSeleccionada.estado_ubicacion || '';
 			pais_ubicacion = ubicacionSeleccionada.pais_ubicacion || '';
 			activo = ubicacionSeleccionada.activo || false;
+			oculto = ubicacionSeleccionada.oculto || false;
 
 			// Portada (primer elemento del array)
 			portadaExistente = ubicacionSeleccionada.portada?.[0] || '';
@@ -249,6 +252,7 @@
 			formData.append('estado_ubicacion', estado_ubicacion);
 			formData.append('pais_ubicacion', pais_ubicacion);
 			formData.append('activo', activo.toString());
+			formData.append('oculto', oculto.toString());
 			formData.append('portada', JSON.stringify(urlPortada ? [urlPortada] : []));
 			formData.append('descripcion_larga', descripcion_larga);
 			formData.append('historia', historia);
@@ -398,18 +402,34 @@
 								/>
 							</div>
 
-							<div class="lg:col-span-2 flex items-center gap-3">
-								<input
-									type="checkbox"
-									id="activo-edit"
-									bind:checked={activo}
-									disabled={cargando}
-									class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
-										focus:ring-green-500 focus:ring-2"
-								/>
-								<label for="activo-edit" class="text-sm font-medium text-white">
-									Ubicación activa
-								</label>
+							<div class="lg:col-span-2 flex flex-wrap gap-6">
+								<div class="flex items-center gap-3">
+									<input
+										type="checkbox"
+										id="activo-edit"
+										bind:checked={activo}
+										disabled={cargando}
+										class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
+											focus:ring-green-500 focus:ring-2"
+									/>
+									<label for="activo-edit" class="text-sm font-medium text-white">
+										Ubicación activa
+									</label>
+								</div>
+
+								<div class="flex items-center gap-3">
+									<input
+										type="checkbox"
+										id="oculto-edit"
+										bind:checked={oculto}
+										disabled={cargando}
+										class="w-5 h-5 text-red-600 bg-neutral-800 border-green-700 rounded 
+											focus:ring-red-500 focus:ring-2"
+									/>
+									<label for="oculto-edit" class="text-sm font-medium text-white">
+										Ocultar en la web
+									</label>
+								</div>
 							</div>
 						</div>
 

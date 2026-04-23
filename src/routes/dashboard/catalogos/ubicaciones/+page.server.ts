@@ -53,6 +53,7 @@ export const actions: Actions = {
                 estado_ubicacion: formData.get('estado_ubicacion') as string,
                 pais_ubicacion: formData.get('pais_ubicacion') as string,
                 activo: formData.get('activo') === 'true',
+                oculto: formData.get('oculto') === 'true',
                 portada: portada
             };
 
@@ -103,6 +104,7 @@ export const actions: Actions = {
                 estado_ubicacion: formData.get('estado_ubicacion') as string,
                 pais_ubicacion: formData.get('pais_ubicacion') as string,
                 activo: formData.get('activo') === 'true',
+                oculto: formData.get('oculto') === 'true',
                 portada: portada
             };
 
@@ -118,6 +120,23 @@ export const actions: Actions = {
         } catch (error) {
             console.error('Error actualizando ubicación:', error);
             return fail(500, { message: 'Error al actualizar la ubicación' });
+        }
+    },
+
+    eliminar: async ({ request, locals }) => {
+        try {
+            const formData = await request.formData();
+            const id = Number(formData.get('id_ubicacion'));
+
+            if (!id) return fail(400, { message: 'ID de ubicación no proporcionado' });
+
+            const { eliminarUbicacion } = await import('$lib/services/ubicacionesService');
+            await eliminarUbicacion(id, locals.supabase);
+
+            return { success: true, message: 'Ubicación eliminada correctamente' };
+        } catch (error: any) {
+            console.error('Error eliminando ubicación:', error);
+            return fail(500, { message: error.message || 'Error al eliminar la ubicación y sus recursos asociados' });
         }
     }
 };

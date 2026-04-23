@@ -757,20 +757,37 @@
 							/>
 						</div>
 
-						<div class="flex items-center">
-							<!-- ✅ Hidden input para asegurar que siempre se envíe un valor -->
-							<input
-								type="hidden"
-								name="activo"
-								value={experienciaSeleccionada.activo ? 'true' : 'false'}
-							/>
-							<input
-								type="checkbox"
-								id="activo-edit"
-								bind:checked={experienciaSeleccionada.activo}
-								class="w-4 h-4 text-green-600"
-							/>
-							<label for="activo-edit" class="ml-2 text-sm text-white">Activo</label>
+						<div class="flex flex-col gap-4">
+							<div class="flex items-center">
+								<!-- ✅ Hidden input para asegurar que siempre se envíe un valor -->
+								<input
+									type="hidden"
+									name="activo"
+									value={experienciaSeleccionada.activo ? 'true' : 'false'}
+								/>
+								<input
+									type="checkbox"
+									id="activo-edit"
+									bind:checked={experienciaSeleccionada.activo}
+									class="w-4 h-4 text-green-600 rounded bg-neutral-800 border-green-700"
+								/>
+								<label for="activo-edit" class="ml-2 text-sm text-white font-medium">Activa (Venta pública)</label>
+							</div>
+
+							<div class="flex items-center">
+								<input
+									type="hidden"
+									name="oculto"
+									value={experienciaSeleccionada.oculto ? 'true' : 'false'}
+								/>
+								<input
+									type="checkbox"
+									id="oculto-edit"
+									bind:checked={experienciaSeleccionada.oculto}
+									class="w-4 h-4 text-yellow-600 rounded bg-neutral-800 border-green-700"
+								/>
+								<label for="oculto-edit" class="ml-2 text-sm text-white font-medium">Ocultar de la Web (Invisible para clientes)</label>
+							</div>
 						</div>
 					</div>
 				</div>
