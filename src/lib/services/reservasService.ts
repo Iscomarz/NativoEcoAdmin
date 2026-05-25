@@ -42,6 +42,43 @@ export async function obtenerReservasByExperiencia(idExperiencia: number): Promi
 }
 
 /**
+ * Obtener todas las reservas de la base de datos
+ */
+export async function obtenerTodasLasReservas(): Promise<mreserva[]> {
+    try {
+        const { data, error } = await supabase
+            .from(TABLA_RESERVAS)
+            .select("*")
+            .order("fecha_reserva", { ascending: false });
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Error obteniendo todas las reservas:", error);
+        throw error;
+    }
+}
+
+/**
+ * Obtener todas las reservas de la base de datos junto con el título de su experiencia
+ */
+export async function obtenerReservasConExperiencia(): Promise<any[]> {
+    try {
+        const { data, error } = await supabase
+            .from(TABLA_RESERVAS)
+            .select("*, cexperiencia(titulo)")
+            .order("fecha_reserva", { ascending: false });
+
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error("Error obteniendo reservas con experiencia:", error);
+        throw error;
+    }
+}
+
+
+/**
  * Interface para métricas de reservas
  */
 export interface MetricasReservas {

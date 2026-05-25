@@ -1,12 +1,31 @@
 <script lang="ts">
-	let ventas = [
-		{ fecha: '2025-12-01', experiencia: 'Tour en Cenotes', cantidad: 5, total: 7500 },
-		{ fecha: '2025-12-02', experiencia: 'Snorkel en Arrecife', cantidad: 3, total: 6000 },
-		{ fecha: '2025-12-03', experiencia: 'Visita a Ruinas Mayas', cantidad: 8, total: 9600 }
-	];
+	import type { mreserva } from '$lib/services/reservasService';
 
-	let totalVentas = $derived(ventas.reduce((sum, v) => sum + v.total, 0));
-	let totalCantidad = $derived(ventas.reduce((sum, v) => sum + v.cantidad, 0));
+	interface ReservaConExperiencia extends mreserva {
+		cexperiencia?: {
+			titulo: string;
+		} | null;
+	}
+
+	let { data }: { data: { reservas: ReservaConExperiencia[] } } = $props();
+
+	const reservas = $derived(data.reservas || []);
+
+	// Métricas derivadas de las reservas reales
+	const totalVentas = $derived(reservas.reduce((sum, r) => sum + (r.total || 0), 0));
+	const totalCantidad = $derived(reservas.length);
+	const promedioPorVenta = $derived(totalCantidad > 0 ? Math.round(totalVentas / totalCantidad) : 0);
+
+	// Helper para formatear fecha de reserva
+	function formatearFecha(fechaStr: string): string {
+		if (!fechaStr) return '';
+		const fecha = new Date(fechaStr);
+		return fecha.toLocaleDateString('es-MX', {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit'
+		});
+	}
 </script>
 
 <div class="space-y-6">
@@ -29,7 +48,7 @@
 		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
 			<p class="text-sm text-green-400">Promedio por Venta</p>
 			<p class="text-3xl font-bold text-white mt-2">
-				${Math.round(totalVentas / totalCantidad).toLocaleString()} MXN
+				${promedioPorVenta.toLocaleString()} MXN
 			</p>
 		</div>
 	</div>
@@ -43,21 +62,35 @@
 			<thead class="bg-neutral-800 border-b border-green-700">
 				<tr>
 					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Fecha</th>
+					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Cliente</th>
 					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Experiencia</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Cantidad</th>
+					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Pax</th>
 					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Total</th>
 				</tr>
 			</thead>
 			<tbody class="divide-y divide-green-900">
-				{#each ventas as venta}
+				{#each reservas as reserva}
 					<tr class="hover:bg-neutral-800">
-						<td class="px-6 py-4 text-sm text-white">{venta.fecha}</td>
-						<td class="px-6 py-4 text-sm font-medium text-white">{venta.experiencia}</td>
-						<td class="px-6 py-4 text-sm text-gray-300">{venta.cantidad}</td>
-						<td class="px-6 py-4 text-sm font-semibold text-green-500">${venta.total.toLocaleString()} MXN</td>
+						<td class="px-6 py-4 text-sm text-white">{formatearFecha(reserva.fecha_reserva)}</td>
+						<td class="px-6 py-4 text-sm text-white font-medium">
+							<div>{reserva.nombre_cliente}</div>
+							<div class="text-xs text-gray-400 mt-0.5">{reserva.correo_cliente}</div>
+						</td>
+						<td class="px-6 py-4 text-sm text-gray-300">{reserva.cexperiencia?.titulo || 'Sin experiencia'}</td>
+						<td class="px-6 py-4 text-sm text-gray-300">
+							{reserva.grupo ? `👥 ${reserva.cantidad_grupo}` : `👤 ${reserva.numero_cliente || 1}`}
+						</td>
+						<td class="px-6 py-4 text-sm font-semibold text-green-500">${reserva.total.toLocaleString()} MXN</td>
+					</tr>
+				{:else}
+					<tr>
+						<td colspan="5" class="px-6 py-8 text-center text-neutral-500">
+							No se han encontrado registros de ventas.
+						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	</div>
 </div>
+
