@@ -14,7 +14,7 @@
 		loading = true;
 
 		const result = await auth.login(email, password);
-		
+
 		if (result.success) {
 			toast.success('¡Sesión iniciada correctamente!');
 			goto('/dashboard');
@@ -84,9 +84,7 @@
 			</div>
 
 			<div>
-				<label for="password" class="block text-sm font-medium text-white mb-2">
-					Contraseña
-				</label>
+				<label for="password" class="block text-sm font-medium text-white mb-2"> Contraseña </label>
 				<input
 					type="password"
 					id="password"
@@ -118,7 +116,7 @@
 			</button>
 		</form>
 
-		<div class="mt-6 text-center">
+		<!-- <div class="mt-6 text-center">
 			<button
 				type="button"
 				on:click={toggleForm}
@@ -129,7 +127,7 @@
 					? '¿Ya tienes cuenta? Inicia sesión'
 					: '¿No tienes cuenta? Regístrate'}
 			</button>
-		</div>
+		</div> -->
 
 		<div class="mt-6 text-center text-sm text-gray-400">
 			<p>Versión 1.0.0</p>
