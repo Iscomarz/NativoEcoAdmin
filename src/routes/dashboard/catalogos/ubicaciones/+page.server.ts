@@ -48,10 +48,20 @@ export const actions: Actions = {
                 }
             }
 
+            const nombre = formData.get('nombre_ubicacion') as string;
+            const estado = formData.get('estado_ubicacion') as string;
+            const pais = formData.get('pais_ubicacion') as string;
+
+            if (!nombre || nombre.trim() === '' ||
+                !estado || estado.trim() === '' ||
+                !pais || pais.trim() === '') {
+                return fail(400, { message: 'El nombre, estado y país de la ubicación son obligatorios y no pueden estar vacíos' });
+            }
+
             const nuevaUbicacion = {
-                nombre_ubicacion: formData.get('nombre_ubicacion') as string,
-                estado_ubicacion: formData.get('estado_ubicacion') as string,
-                pais_ubicacion: formData.get('pais_ubicacion') as string,
+                nombre_ubicacion: nombre.trim(),
+                estado_ubicacion: estado.trim(),
+                pais_ubicacion: pais.trim(),
                 activo: formData.get('activo') === 'true',
                 oculto: formData.get('oculto') === 'true',
                 portada: portada
@@ -77,6 +87,10 @@ export const actions: Actions = {
             const formData = await request.formData();
             const id = Number(formData.get('id_ubicacion'));
 
+            if (isNaN(id) || id <= 0) {
+                return fail(400, { message: 'El ID de la ubicación proporcionado no es válido' });
+            }
+
             // Parsear portada
             const portadaJson = formData.get('portada') as string;
             let portada: string[] = [];
@@ -99,10 +113,20 @@ export const actions: Actions = {
                 }
             }
 
+            const nombre = formData.get('nombre_ubicacion') as string;
+            const estado = formData.get('estado_ubicacion') as string;
+            const pais = formData.get('pais_ubicacion') as string;
+
+            if (!nombre || nombre.trim() === '' ||
+                !estado || estado.trim() === '' ||
+                !pais || pais.trim() === '') {
+                return fail(400, { message: 'El nombre, estado y país de la ubicación son obligatorios y no pueden estar vacíos' });
+            }
+
             const datosActualizados = {
-                nombre_ubicacion: formData.get('nombre_ubicacion') as string,
-                estado_ubicacion: formData.get('estado_ubicacion') as string,
-                pais_ubicacion: formData.get('pais_ubicacion') as string,
+                nombre_ubicacion: nombre.trim(),
+                estado_ubicacion: estado.trim(),
+                pais_ubicacion: pais.trim(),
                 activo: formData.get('activo') === 'true',
                 oculto: formData.get('oculto') === 'true',
                 portada: portada
@@ -128,7 +152,9 @@ export const actions: Actions = {
             const formData = await request.formData();
             const id = Number(formData.get('id_ubicacion'));
 
-            if (!id) return fail(400, { message: 'ID de ubicación no proporcionado' });
+            if (!id || isNaN(id) || id <= 0) {
+                return fail(400, { message: 'El ID de la ubicación proporcionado no es válido' });
+            }
 
             const { eliminarUbicacion } = await import('$lib/services/ubicacionesService');
             await eliminarUbicacion(id, locals.supabase);

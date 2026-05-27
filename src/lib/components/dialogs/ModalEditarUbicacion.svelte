@@ -216,9 +216,11 @@
 		try {
 			cargando = true;
 
-			// Validar campos requeridos
-			if (!nombre_ubicacion || !estado_ubicacion || !pais_ubicacion) {
-				toast.error('Por favor completa todos los campos obligatorios');
+			// Validar campos requeridos sin espacios en blanco
+			if (!nombre_ubicacion || nombre_ubicacion.trim() === '' ||
+				!estado_ubicacion || estado_ubicacion.trim() === '' ||
+				!pais_ubicacion || pais_ubicacion.trim() === '') {
+				toast.error('Por favor completa todos los campos obligatorios (no se permiten campos vacíos)');
 				cargando = false;
 				return;
 			}

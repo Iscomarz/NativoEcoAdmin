@@ -39,16 +39,49 @@ export const actions: Actions = {
             const formData = await request.formData();
             const id = Number(formData.get('id'));
 
+            if (isNaN(id) || id <= 0) {
+                return fail(400, { message: 'El ID de la experiencia no es válido' });
+            }
+
+            const titulo = formData.get('titulo') as string;
+            const descripcion = formData.get('descripcion') as string;
+            const fecha_inicio = formData.get('fecha_inicio') as string;
+            const fecha_fin = formData.get('fecha_fin') as string;
+            const capacidad = Number(formData.get('capacidad'));
+            const id_ubicacion = Number(formData.get('id_ubicacion'));
+
+            if (!titulo || titulo.trim() === '') {
+                return fail(400, { message: 'El título de la experiencia es obligatorio y no puede estar vacío' });
+            }
+            if (!descripcion || descripcion.trim() === '') {
+                return fail(400, { message: 'La descripción corta de la experiencia es obligatoria y no puede estar vacía' });
+            }
+            if (isNaN(capacidad) || capacidad <= 0) {
+                return fail(400, { message: 'La capacidad de la experiencia debe ser mayor a 0' });
+            }
+            if (isNaN(id_ubicacion) || id_ubicacion <= 0) {
+                return fail(400, { message: 'Debes seleccionar una ubicación válida' });
+            }
+            if (!fecha_inicio || !fecha_fin) {
+                return fail(400, { message: 'Las fechas de inicio y fin son obligatorias' });
+            }
+
+            const fechaInicioDate = new Date(fecha_inicio);
+            const fechaFinDate = new Date(fecha_fin);
+            if (fechaInicioDate > fechaFinDate) {
+                return fail(400, { message: 'La fecha de fin no puede ser anterior a la fecha de inicio' });
+            }
+
             const portadaExperiencia = formData.get('portada_experiencia') as string | null;
             const datosActualizados: Record<string, any> = {
-                titulo: formData.get('titulo') as string,
-                descripcion: formData.get('descripcion') as string,
-                fecha_inicio: formData.get('fecha_inicio') as string,
-                fecha_fin: formData.get('fecha_fin') as string,
-                capacidad: Number(formData.get('capacidad')),
+                titulo: titulo.trim(),
+                descripcion: descripcion.trim(),
+                fecha_inicio: fecha_inicio,
+                fecha_fin: fecha_fin,
+                capacidad: capacidad,
                 activo: formData.get('activo') === 'true',
                 oculto: formData.get('oculto') === 'true',
-                id_ubicacion: Number(formData.get('id_ubicacion')),
+                id_ubicacion: id_ubicacion,
                 portada_experiencia: portadaExperiencia || null
             };
 
@@ -128,7 +161,16 @@ export const actions: Actions = {
                     return fail(400, { message: 'El precio por persona debe ser mayor a 0' });
                 }
 
-                const capacidad = Number(formData.get('capacidad')) || 1;
+                const capacidad = Number(formData.get('capacidad'));
+                if (isNaN(capacidad) || capacidad <= 0) {
+                    return fail(400, { message: 'La capacidad de la habitación debe ser mayor a 0' });
+                }
+
+                const cantidad = Number(formData.get('cantidad_habitacion'));
+                if (isNaN(cantidad) || cantidad <= 0 || cantidad > 50) {
+                    return fail(400, { message: 'La cantidad de habitaciones debe estar entre 1 y 50' });
+                }
+
                 let precioCuarto = Number(formData.get('precioCuarto'));
                 if (isNaN(precioCuarto) || precioCuarto <= 0) {
                     precioCuarto = capacidad * precioPersona;
@@ -141,7 +183,7 @@ export const actions: Actions = {
                     precioCuarto: precioCuarto,
                     imagenes: imagenes,
                     idexperiencia: Number(formData.get('idexperiencia')),
-                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')) || 1,
+                    cantidad_habitacion: cantidad,
                     capacidad: capacidad
                 };
 
@@ -179,7 +221,16 @@ export const actions: Actions = {
                     return fail(400, { message: 'El precio por persona debe ser mayor a 0' });
                 }
 
-                const capacidad = Number(formData.get('capacidad')) || 1;
+                const capacidad = Number(formData.get('capacidad'));
+                if (isNaN(capacidad) || capacidad <= 0) {
+                    return fail(400, { message: 'La capacidad de la habitación debe ser mayor a 0' });
+                }
+
+                const cantidad = Number(formData.get('cantidad_habitacion'));
+                if (isNaN(cantidad) || cantidad <= 0 || cantidad > 50) {
+                    return fail(400, { message: 'La cantidad de habitaciones debe estar entre 1 y 50' });
+                }
+
                 let precioCuarto = Number(formData.get('precioCuarto'));
                 if (isNaN(precioCuarto) || precioCuarto <= 0) {
                     precioCuarto = capacidad * precioPersona;
@@ -191,7 +242,7 @@ export const actions: Actions = {
                     precioPersona: precioPersona,
                     precioCuarto: precioCuarto,
                     imagenes: imagenes,
-                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')) || 1,
+                    cantidad_habitacion: cantidad,
                     capacidad: capacidad
                 };
 

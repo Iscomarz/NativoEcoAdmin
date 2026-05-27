@@ -32,16 +32,45 @@ export const actions: Actions = {
         try {
             const formData = await request.formData();
 
+            const titulo = formData.get('titulo') as string;
+            const descripcion = formData.get('descripcion') as string;
+            const fecha_inicio = formData.get('fecha_inicio') as string;
+            const fecha_fin = formData.get('fecha_fin') as string;
+            const capacidad = Number(formData.get('capacidad'));
+            const id_ubicacion = Number(formData.get('id_ubicacion'));
+
+            if (!titulo || titulo.trim() === '') {
+                return fail(400, { message: 'El título de la experiencia es obligatorio y no puede estar vacío' });
+            }
+            if (!descripcion || descripcion.trim() === '') {
+                return fail(400, { message: 'La descripción corta de la experiencia es obligatoria y no puede estar vacía' });
+            }
+            if (isNaN(capacidad) || capacidad <= 0) {
+                return fail(400, { message: 'La capacidad de la experiencia debe ser mayor a 0' });
+            }
+            if (isNaN(id_ubicacion) || id_ubicacion <= 0) {
+                return fail(400, { message: 'Debes seleccionar una ubicación válida' });
+            }
+            if (!fecha_inicio || !fecha_fin) {
+                return fail(400, { message: 'Las fechas de inicio y fin son obligatorias' });
+            }
+
+            const fechaInicioDate = new Date(fecha_inicio);
+            const fechaFinDate = new Date(fecha_fin);
+            if (fechaInicioDate > fechaFinDate) {
+                return fail(400, { message: 'La fecha de fin no puede ser anterior a la fecha de inicio' });
+            }
+
             const nuevaExperiencia = {
-                titulo: formData.get('titulo') as string,
-                descripcion: formData.get('descripcion') as string,
-                fecha_inicio: formData.get('fecha_inicio') as string,
-                fecha_fin: formData.get('fecha_fin') as string,
-                capacidad: Number(formData.get('capacidad')),
+                titulo: titulo.trim(),
+                descripcion: descripcion.trim(),
+                fecha_inicio,
+                fecha_fin,
+                capacidad,
                 activo: formData.get('activo') === 'true',
+                id_ubicacion,
+                portada_experiencia: (formData.get('portada_experiencia') as string) || undefined,
                 oculto: formData.get('oculto') === 'true',
-                id_ubicacion: Number(formData.get('id_ubicacion')),
-                portada_experiencia: (formData.get('portada_experiencia') as string) || undefined
             };
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
@@ -121,10 +150,19 @@ export const actions: Actions = {
                     return fail(400, { message: `El precio por persona de la habitación "${hab.nombre}" debe ser mayor a 0` });
                 }
 
-                const capacidad = Number(hab.capacidad) || 1;
+                const capacidadHab = Number(hab.capacidad);
+                if (isNaN(capacidadHab) || capacidadHab <= 0) {
+                    return fail(400, { message: `La capacidad de la habitación "${hab.nombre}" debe ser mayor a 0` });
+                }
+
+                const cantidadHab = Number(hab.cantidad_habitacion);
+                if (isNaN(cantidadHab) || cantidadHab <= 0 || cantidadHab > 50) {
+                    return fail(400, { message: `La cantidad de habitaciones de tipo "${hab.nombre}" debe estar entre 1 y 50` });
+                }
+
                 let precioCuarto = Number(hab.precioCuarto);
                 if (isNaN(precioCuarto) || precioCuarto <= 0) {
-                    precioCuarto = capacidad * precioPersona;
+                    precioCuarto = capacidadHab * precioPersona;
                 }
 
                 const nuevaHabitacion: chabitacion = {
@@ -135,11 +173,11 @@ export const actions: Actions = {
                     precioCuarto: precioCuarto,
                     imagenes: hab.imagenes,
                     idexperiencia: hab.idexperiencia,
-                    cantidad_habitacion: hab.cantidad_habitacion
+                    cantidad_habitacion: cantidadHab
                 };
 
                 const detalleHabitacion: dhabitacion = {
-                    capacidad: capacidad,
+                    capacidad: capacidadHab,
                     id_chabitacion: 0, // Se asignará en el servicio
                     conteo_capacidad: 0,
                     id_estatus: 1 // Estado inicial (disponible)

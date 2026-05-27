@@ -301,6 +301,18 @@
 				return;
 			}
 
+			if (capacidad <= 0) {
+				toast.error('La capacidad de la experiencia debe ser mayor a 0');
+				cargando = false;
+				return;
+			}
+
+			if (new Date(fecha_inicio) > new Date(fecha_fin)) {
+				toast.error('La fecha de fin no puede ser anterior a la fecha de inicio');
+				cargando = false;
+				return;
+			}
+
 			// Validar habitaciones
 			if (habitaciones.length > 0) {
 				for (let i = 0; i < habitaciones.length; i++) {
@@ -315,8 +327,13 @@
 						cargando = false;
 						return;
 					}
-					if (!hab.capacidad || hab.capacidad <= 0) {
+					if (hab.capacidad === undefined || hab.capacidad === null || hab.capacidad <= 0) {
 						toast.error(`La capacidad de la habitación #${i + 1} (${hab.nombre || 'sin nombre'}) debe ser mayor a 0`);
+						cargando = false;
+						return;
+					}
+					if (hab.cantidad_habitacion === undefined || hab.cantidad_habitacion === null || hab.cantidad_habitacion <= 0 || hab.cantidad_habitacion > 50) {
+						toast.error(`La cantidad de habitaciones para #${i + 1} (${hab.nombre || 'sin nombre'}) debe estar entre 1 y 50`);
 						cargando = false;
 						return;
 					}
@@ -1009,14 +1026,16 @@
 										type="number"
 										bind:value={habitacion.cantidad_habitacion}
 										disabled={cargando}
+										required
 										min="1"
+										max="50"
 										placeholder="1"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
 											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
+											focus:ring-green-600 disabled:opacity-50 text-sm"
 									/>
 									<p class="text-xs text-neutral-400 mt-1">
-										Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo
+										Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo (máximo 50)
 									</p>
 								</div>
 
@@ -1029,11 +1048,12 @@
 										type="number"
 										bind:value={habitacion.capacidad}
 										disabled={cargando}
+										required
 										min="1"
 										placeholder="1"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
 											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
+											focus:ring-green-600 disabled:opacity-50 text-sm"
 									/>
 								</div>
 							</div>
