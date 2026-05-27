@@ -121,74 +121,76 @@
 </script>
 
 <div class="space-y-6">
-	<div class="flex justify-between items-center">
+	<div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
 		<div>
-			<h1 class="text-3xl font-bold text-white">Ubicaciones</h1>
-			<p class="text-green-400 mt-1">Gestiona las ubicaciones disponibles</p>
+			<h1 class="text-2xl sm:text-3xl font-bold text-white">Ubicaciones</h1>
+			<p class="text-green-400 mt-1 text-sm sm:text-base">Gestiona las ubicaciones disponibles</p>
 		</div>
 		<button
 			onclick={abrirModalCrear}
-			class="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg font-medium transition shadow-md"
+			class="px-4 py-2.5 sm:px-6 sm:py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg font-medium transition shadow-md self-start sm:self-auto text-sm sm:text-base"
 		>
 			➕ Nueva Ubicación
 		</button>
 	</div>
 
 	<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md overflow-hidden">
-		<table class="w-full">
-			<thead class="bg-neutral-800 border-b border-green-700">
-				<tr>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">ID</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Nombre</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Estado</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">País</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Status</th>
-					<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Acciones</th>
-				</tr>
-			</thead>
-			<tbody class="divide-y divide-green-900">
-				{#each ubicaciones as ubicacion}
-					<tr class="hover:bg-neutral-800">
-						<td class="px-6 py-4 text-sm text-white">{ubicacion.id_ubicacion}</td>
-						<td class="px-6 py-4 text-sm font-medium text-white">{ubicacion.nombre_ubicacion}</td>
-						<td class="px-6 py-4 text-sm text-gray-300">{ubicacion.estado_ubicacion}</td>
-						<td class="px-6 py-4 text-sm text-gray-300">{ubicacion.pais_ubicacion}</td>
-						<td class="px-6 py-4">
-							<span class="px-3 py-1 text-xs font-semibold rounded-full {ubicacion.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-								{ubicacion.activo ? 'Activo' : 'Inactivo'}
-							</span>
-							{#if ubicacion.oculto}
-								<span class="ml-2 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
-									Oculto
-								</span>
-							{/if}
-						</td>
-						<td class="px-6 py-4 text-sm flex gap-2">
-							<button
-								onclick={() => seleccionarUbicacion(ubicacion)}
-								disabled={cargando}
-								class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition disabled:opacity-50"
-							>
-								Editar
-							</button>
-							<button
-								onclick={() => eliminarUbicacion(ubicacion.id_ubicacion, ubicacion.nombre_ubicacion)}
-								disabled={cargando}
-								class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition disabled:opacity-50"
-							>
-								Eliminar
-							</button>
-						</td>
-					</tr>
-				{:else}
+		<div class="overflow-x-auto">
+			<table class="w-full min-w-[700px] sm:min-w-0">
+				<thead class="bg-neutral-800 border-b border-green-700">
 					<tr>
-						<td colspan="6" class="px-6 py-8 text-center text-neutral-500">
-							No hay ubicaciones registradas
-						</td>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase hidden sm:table-cell">ID</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Nombre</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Estado</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">País</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Status</th>
+						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Acciones</th>
 					</tr>
-				{/each}
-			</tbody>
-		</table>
+				</thead>
+				<tbody class="divide-y divide-green-900">
+					{#each ubicaciones as ubicacion}
+						<tr class="hover:bg-neutral-800">
+							<td class="px-6 py-4 text-sm text-white hidden sm:table-cell">{ubicacion.id_ubicacion}</td>
+							<td class="px-6 py-4 text-sm font-medium text-white">{ubicacion.nombre_ubicacion}</td>
+							<td class="px-6 py-4 text-sm text-gray-300">{ubicacion.estado_ubicacion}</td>
+							<td class="px-6 py-4 text-sm text-gray-300">{ubicacion.pais_ubicacion}</td>
+							<td class="px-6 py-4">
+								<span class="px-3 py-1 text-xs font-semibold rounded-full {ubicacion.activo ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+									{ubicacion.activo ? 'Activo' : 'Inactivo'}
+								</span>
+								{#if ubicacion.oculto}
+									<span class="ml-2 px-3 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+										Oculto
+									</span>
+								{/if}
+							</td>
+							<td class="px-6 py-4 text-sm flex gap-2">
+								<button
+									onclick={() => seleccionarUbicacion(ubicacion)}
+									disabled={cargando}
+									class="px-3 py-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition disabled:opacity-50"
+								>
+									Editar
+								</button>
+								<button
+									onclick={() => eliminarUbicacion(ubicacion.id_ubicacion, ubicacion.nombre_ubicacion)}
+									disabled={cargando}
+									class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition disabled:opacity-50"
+								>
+									Eliminar
+								</button>
+							</td>
+						</tr>
+					{:else}
+						<tr>
+							<td colspan="6" class="px-6 py-8 text-center text-neutral-500">
+								No hay ubicaciones registradas
+							</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 

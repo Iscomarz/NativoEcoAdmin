@@ -30,6 +30,7 @@
 	let fecha_fin = $state('');
 	let capacidad = $state<number>(0);
 	let activo = $state(false);
+	let oculto = $state(false);
 
 	// Campos de detalle
 	let descripcionLarga = $state('');
@@ -323,6 +324,7 @@
 			formData.append('fecha_fin', fecha_fin);
 			formData.append('capacidad', capacidad.toString());
 			formData.append('activo', activo.toString());
+			formData.append('oculto', oculto.toString());
 			formData.append('descripcionLarga', descripcionLarga);
 			formData.append('sede', sede);
 			formData.append('link_whatsapp', link_whatsapp);
@@ -411,6 +413,7 @@
 				fecha_fin = '';
 				capacidad = 0;
 				activo = false;
+				oculto = false;
 				descripcionLarga = '';
 				sede = '';
 				link_whatsapp = '';
@@ -496,8 +499,8 @@
 
 <div class="space-y-6">
 	<div>
-		<h1 class="text-3xl font-bold text-white">Crear Experiencia</h1>
-		<p class="text-green-400 mt-1">Agrega una nueva experiencia al catálogo</p>
+		<h1 class="text-2xl sm:text-3xl font-bold text-white">Crear Experiencia</h1>
+		<p class="text-green-400 mt-1 text-sm sm:text-base">Agrega una nueva experiencia al catálogo</p>
 	</div>
 
 	<form 
@@ -666,18 +669,34 @@
 				</div>
 
 				<!-- Activo -->
-				<div class="lg:col-span-2 flex items-center gap-3">
-					<input
-						type="checkbox"
-						id="activo"
-						bind:checked={activo}
-						disabled={cargando}
-						class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
-							focus:ring-green-500 focus:ring-2"
-					/>
-					<label for="activo" class="text-sm font-medium text-white">
-						Experiencia activa
-					</label>
+				<div class="lg:col-span-2 flex flex-col gap-3">
+					<div class="flex items-center gap-3">
+						<input
+							type="checkbox"
+							id="activo"
+							bind:checked={activo}
+							disabled={cargando}
+							class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
+								focus:ring-green-500 focus:ring-2"
+						/>
+						<label for="activo" class="text-sm font-medium text-white">
+							Experiencia activa (Venta pública)
+						</label>
+					</div>
+
+					<div class="flex items-center gap-3">
+						<input
+							type="checkbox"
+							id="oculto"
+							bind:checked={oculto}
+							disabled={cargando}
+							class="w-5 h-5 text-yellow-600 bg-neutral-800 border-green-700 rounded 
+								focus:ring-yellow-500 focus:ring-2"
+						/>
+						<label for="oculto" class="text-sm font-medium text-white">
+							Ocultar de la Web (Invisible para clientes)
+						</label>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -847,16 +866,16 @@
 
 		<!-- SECCIÓN: HABITACIONES -->
 		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<div class="flex justify-between items-center mb-4 pb-2 border-b border-green-700">
-				<h2 class="text-xl font-bold text-white">
+			<div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4 pb-2 border-b border-green-700">
+				<h2 class="text-lg sm:text-xl font-bold text-white">
 					🏠 Habitaciones
 				</h2>
 				<button
 					type="button"
 					onclick={agregarHabitacion}
 					disabled={cargando}
-					class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-						font-medium transition shadow-sm disabled:opacity-50 flex items-center gap-2"
+					class="w-full sm:w-auto px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
+						font-medium transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
 				>
 					➕ Agregar Habitación
 				</button>
@@ -888,7 +907,7 @@
 							</div>
 
 							<!-- Campos de la habitación -->
-							<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
 								<!-- Nombre -->
 								<div>
 									<label class="block text-sm font-medium text-neutral-300 mb-2">
@@ -901,7 +920,7 @@
 										placeholder="Ej: Habitación Doble"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
 											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
+											focus:ring-green-600 disabled:opacity-50 text-sm"
 									/>
 								</div>
 
@@ -1056,13 +1075,13 @@
 		</div>
 
 		<!-- BOTONES DE ACCIÓN -->
-		<div class="flex gap-4">
+		<div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
 			<button
 				type="submit"
 				disabled={cargando}
-				class="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
+				class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
 					font-medium transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed
-					flex items-center gap-2"
+					flex items-center justify-center gap-2 text-sm sm:text-base"
 			>
 				{#if cargando}
 					<svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -1077,8 +1096,8 @@
 			
 			<a
 				href="/dashboard/experiencias/modificar"
-				class="px-6 py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
-					font-medium transition"
+				class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
+					font-medium transition text-center text-sm sm:text-base"
 			>
 				Cancelar
 			</a>

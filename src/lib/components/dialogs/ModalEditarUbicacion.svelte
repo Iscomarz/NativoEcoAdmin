@@ -333,33 +333,33 @@
 </script>
 
 {#if mostrarModal}
-	<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-		<div class="bg-neutral-900 rounded-lg border border-green-700 w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
+		<div class="bg-neutral-900 rounded-lg border border-green-700 w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
 			<form method="POST" action={modoCrear ? '?/crear' : '?/actualizar'} onsubmit={manejarSubmit}>
 				<!-- Header -->
-				<div class="sticky top-0 bg-neutral-900 border-b border-green-700 px-6 py-4 flex justify-between items-center">
-					<h2 class="text-2xl font-bold text-white">
+				<div class="sticky top-0 bg-neutral-900 border-b border-green-700 px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center z-10">
+					<h2 class="text-xl sm:text-2xl font-bold text-white">
 						{modoCrear ? '➕ Nueva Ubicación' : '✏️ Editar Ubicación'}
 					</h2>
 					<button
 						type="button"
 						onclick={onClose}
 						disabled={cargando}
-						class="text-white hover:text-red-500 text-2xl disabled:opacity-50"
+						class="text-white hover:text-red-500 text-2xl disabled:opacity-50 p-1"
 					>
 						✕
 					</button>
 				</div>
 
 				<!-- Content -->
-				<div class="p-6 space-y-8">
+				<div class="p-4 sm:p-6 space-y-6 sm:space-y-8">
 					<!-- INFORMACIÓN GENERAL -->
 					<div>
-						<h3 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
+						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
 							📋 Información General
 						</h3>
 
-						<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+						<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 							<div class="lg:col-span-2">
 								<label class="block text-sm font-medium text-white mb-2">
 									Nombre <span class="text-red-500">*</span>
@@ -370,7 +370,7 @@
 									required
 									disabled={cargando}
 									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
 								/>
 							</div>
 
@@ -384,7 +384,7 @@
 									required
 									disabled={cargando}
 									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
 								/>
 							</div>
 
@@ -398,11 +398,11 @@
 									required
 									disabled={cargando}
 									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
 								/>
 							</div>
 
-							<div class="lg:col-span-2 flex flex-wrap gap-6">
+							<div class="lg:col-span-2 flex flex-wrap gap-4 sm:gap-6">
 								<div class="flex items-center gap-3">
 									<input
 										type="checkbox"
@@ -444,7 +444,7 @@
 									<img src={portadaExistente} alt="Portada" class="w-full h-full object-cover" />
 									<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
 										<label
-											class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg cursor-pointer"
+											class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg cursor-pointer text-sm font-medium"
 										>
 											Cambiar Portada
 											<input
@@ -468,7 +468,7 @@
 											type="button"
 											onclick={eliminarPortadaNueva}
 											disabled={cargando}
-											class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+											class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium"
 										>
 											🗑️ Eliminar
 										</button>
@@ -480,11 +480,11 @@
 										hover:border-green-700 cursor-pointer transition flex items-center justify-center"
 									class:opacity-50={cargando || optimizando}
 								>
-									<div class="text-center text-neutral-500">
+									<div class="text-center text-neutral-500 p-4">
 										{#if optimizando}
 											<div class="text-green-400">⚡ Optimizando...</div>
 										{:else}
-											<div>📸 Seleccionar Portada</div>
+											<div class="text-sm font-medium">📸 Seleccionar Portada</div>
 											<div class="text-xs mt-1">Se optimizará automáticamente</div>
 										{/if}
 									</div>
@@ -502,11 +502,11 @@
 
 					<!-- DETALLE -->
 					<div>
-						<h3 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
+						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
 							📝 Detalle
 						</h3>
 
-						<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+						<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 							<!-- Descripción Larga -->
 							<div>
 								<label class="block text-sm font-medium text-white mb-2">
@@ -514,10 +514,10 @@
 								</label>
 								<textarea
 									bind:value={descripcion_larga}
-									rows="6"
+									rows="5"
 									disabled={cargando}
 									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
 								></textarea>
 							</div>
 
@@ -528,10 +528,10 @@
 								</label>
 								<textarea
 									bind:value={historia}
-									rows="6"
+									rows="5"
 									disabled={cargando}
 									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
 								></textarea>
 							</div>
 						</div>
@@ -539,14 +539,14 @@
 
 					<!-- GALERÍA -->
 					<div>
-						<h3 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
+						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
 							🖼️ Galería
 						</h3>
 
 						<div class="mb-4">
 							<label
 								class="inline-flex items-center px-4 py-2 bg-green-700 hover:bg-green-600 
-									text-white rounded-lg cursor-pointer transition font-medium"
+									text-white rounded-lg cursor-pointer transition text-sm font-medium"
 								class:opacity-50={cargando || optimizando}
 							>
 								{#if optimizando}
@@ -566,12 +566,12 @@
 						</div>
 
 						{#if imagenesExistentes.length > 0 || previewsNuevas.length > 0}
-							<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+							<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
 								<!-- Existentes -->
 								{#each imagenesExistentes as imagen, index}
-									<div class="relative group">
-										<img src={imagen} alt="Imagen {index + 1}" class="w-full h-32 object-cover rounded-lg border border-green-700" />
-										<span class="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
+									<div class="relative group h-28 sm:h-32">
+										<img src={imagen} alt="Imagen {index + 1}" class="w-full h-full object-cover rounded-lg border border-green-700" />
+										<span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded">
 											Guardada
 										</span>
 										<button
@@ -579,7 +579,7 @@
 											onclick={() => eliminarImagenExistente(index)}
 											disabled={cargando}
 											class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-												transition flex items-center justify-center text-white hover:bg-black/80"
+												transition flex items-center justify-center text-white hover:bg-black/80 text-xs sm:text-sm font-medium"
 										>
 											🗑️ Eliminar
 										</button>
@@ -588,9 +588,9 @@
 								
 								<!-- Nuevas -->
 								{#each previewsNuevas as preview, index}
-									<div class="relative group">
-										<img src={preview} alt="Nueva {index + 1}" class="w-full h-32 object-cover rounded-lg border border-yellow-600" />
-										<span class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded">
+									<div class="relative group h-28 sm:h-32">
+										<img src={preview} alt="Nueva {index + 1}" class="w-full h-full object-cover rounded-lg border border-yellow-600" />
+										<span class="absolute top-2 right-2 bg-yellow-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded">
 											Nueva
 										</span>
 										<button
@@ -598,7 +598,7 @@
 											onclick={() => eliminarImagenNueva(index)}
 											disabled={cargando}
 											class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-												transition flex items-center justify-center text-white hover:bg-black/80"
+												transition flex items-center justify-center text-white hover:bg-black/80 text-xs sm:text-sm font-medium"
 										>
 											🗑️ Eliminar
 										</button>
@@ -606,7 +606,7 @@
 								{/each}
 							</div>
 						{:else}
-							<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
+							<div class="text-center py-6 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg text-sm">
 								<p>No hay imágenes en la galería</p>
 							</div>
 						{/if}
@@ -614,12 +614,12 @@
 				</div>
 
 				<!-- Footer -->
-				<div class="sticky bottom-0 bg-neutral-900 border-t border-green-700 px-6 py-4 flex gap-4">
+				<div class="sticky bottom-0 bg-neutral-900 border-t border-green-700 px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row gap-3 sm:gap-4 z-10">
 					<button
 						type="submit"
 						disabled={cargando}
-						class="px-6 py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-							font-medium transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+						class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
+							font-medium transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
 					>
 						{#if cargando}
 							<svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -636,8 +636,8 @@
 						type="button"
 						onclick={onClose}
 						disabled={cargando}
-						class="px-6 py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
-							font-medium transition disabled:opacity-50"
+						class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
+							font-medium transition disabled:opacity-50 text-sm"
 					>
 						Cancelar
 					</button>
