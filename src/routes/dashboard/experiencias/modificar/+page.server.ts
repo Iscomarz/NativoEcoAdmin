@@ -118,19 +118,35 @@ export const actions: Actions = {
                     }
                 }
 
+                const nombre = formData.get('nombre') as string;
+                if (!nombre || nombre.trim() === '') {
+                    return fail(400, { message: 'El nombre de la habitación es obligatorio' });
+                }
+
+                const precioPersona = Number(formData.get('precioPersona'));
+                if (isNaN(precioPersona) || precioPersona <= 0) {
+                    return fail(400, { message: 'El precio por persona debe ser mayor a 0' });
+                }
+
+                const capacidad = Number(formData.get('capacidad')) || 1;
+                let precioCuarto = Number(formData.get('precioCuarto'));
+                if (isNaN(precioCuarto) || precioCuarto <= 0) {
+                    precioCuarto = capacidad * precioPersona;
+                }
+
                 const nuevaHabitacion: chabitacion = {
-                    nombre: formData.get('nombre') as string,
-                    habitacion_descripcion: formData.get('habitacion_descripcion') as string,
-                    precioPersona: Number(formData.get('precioPersona')),
-                    precioCuarto: Number(formData.get('precioCuarto')),
+                    nombre: nombre,
+                    habitacion_descripcion: formData.get('habitacion_descripcion') as string || '',
+                    precioPersona: precioPersona,
+                    precioCuarto: precioCuarto,
                     imagenes: imagenes,
                     idexperiencia: Number(formData.get('idexperiencia')),
-                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')),
-                    capacidad: Number(formData.get('capacidad'))
+                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')) || 1,
+                    capacidad: capacidad
                 };
 
                 const detalleHabitacion: dhabitacion = {
-                    capacidad: Number(formData.get('capacidad')),
+                    capacidad: capacidad,
                     id_chabitacion: 0, // Se asignará en el servicio
                     conteo_capacidad: 0,
                     id_estatus: 1
@@ -153,19 +169,35 @@ export const actions: Actions = {
                     }
                 }
 
+                const nombre = formData.get('nombre') as string;
+                if (!nombre || nombre.trim() === '') {
+                    return fail(400, { message: 'El nombre de la habitación es obligatorio' });
+                }
+
+                const precioPersona = Number(formData.get('precioPersona'));
+                if (isNaN(precioPersona) || precioPersona <= 0) {
+                    return fail(400, { message: 'El precio por persona debe ser mayor a 0' });
+                }
+
+                const capacidad = Number(formData.get('capacidad')) || 1;
+                let precioCuarto = Number(formData.get('precioCuarto'));
+                if (isNaN(precioCuarto) || precioCuarto <= 0) {
+                    precioCuarto = capacidad * precioPersona;
+                }
+
                 const habitacionActualizada: Partial<chabitacion> = {
-                    nombre: formData.get('nombre') as string,
-                    habitacion_descripcion: formData.get('habitacion_descripcion') as string,
-                    precioPersona: Number(formData.get('precioPersona')),
-                    precioCuarto: Number(formData.get('precioCuarto')),
+                    nombre: nombre,
+                    habitacion_descripcion: formData.get('habitacion_descripcion') as string || '',
+                    precioPersona: precioPersona,
+                    precioCuarto: precioCuarto,
                     imagenes: imagenes,
-                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')),
-                    capacidad: Number(formData.get('capacidad'))
+                    cantidad_habitacion: Number(formData.get('cantidad_habitacion')) || 1,
+                    capacidad: capacidad
                 };
 
-                const capacidad = Number(formData.get('capacidad'));
+                const capacidadVal = capacidad;
 
-                await actualizarHabitacion(id, habitacionActualizada, capacidad, locals.supabase);
+                await actualizarHabitacion(id, habitacionActualizada, capacidadVal, locals.supabase);
                 return { success: true, message: 'Habitación actualizada correctamente' };
 
             } else if (action === 'eliminar') {

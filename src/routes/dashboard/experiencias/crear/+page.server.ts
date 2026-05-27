@@ -41,6 +41,7 @@ export const actions: Actions = {
                 activo: formData.get('activo') === 'true',
                 id_ubicacion: Number(formData.get('id_ubicacion')),
                 portada_experiencia: (formData.get('portada_experiencia') as string) || undefined,
+                oculto: false,
             };
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
@@ -111,19 +112,34 @@ export const actions: Actions = {
 
             // Crear cada habitación
             for (const hab of habitaciones) {
+                if (!hab.nombre || hab.nombre.trim() === '') {
+                    return fail(400, { message: 'El nombre de la habitación es obligatorio' });
+                }
+
+                const precioPersona = Number(hab.precioPersona);
+                if (isNaN(precioPersona) || precioPersona <= 0) {
+                    return fail(400, { message: `El precio por persona de la habitación "${hab.nombre}" debe ser mayor a 0` });
+                }
+
+                const capacidad = Number(hab.capacidad) || 1;
+                let precioCuarto = Number(hab.precioCuarto);
+                if (isNaN(precioCuarto) || precioCuarto <= 0) {
+                    precioCuarto = capacidad * precioPersona;
+                }
+
                 const nuevaHabitacion: chabitacion = {
                     //id: 0, // Se asignará automáticamente
                     nombre: hab.nombre,
                     habitacion_descripcion: hab.habitacion_descripcion,
-                    precioPersona: hab.precioPersona,
-                    precioCuarto: hab.precioCuarto,
+                    precioPersona: precioPersona,
+                    precioCuarto: precioCuarto,
                     imagenes: hab.imagenes,
                     idexperiencia: hab.idexperiencia,
                     cantidad_habitacion: hab.cantidad_habitacion
                 };
 
                 const detalleHabitacion: dhabitacion = {
-                    capacidad: hab.capacidad,
+                    capacidad: capacidad,
                     id_chabitacion: 0, // Se asignará en el servicio
                     conteo_capacidad: 0,
                     id_estatus: 1 // Estado inicial (disponible)
@@ -137,8 +153,8 @@ export const actions: Actions = {
                 message: `${habitaciones.length} habitación(es) creada(s) correctamente`
             };
         } catch (error) {
-            console.error('Error creando experiencia:', error);
-            return fail(500, { message: 'Error al crear la experiencia' });
+            console.error('Error creando habitaciones:', error);
+            return fail(500, { message: 'Error al crear las habitaciones' });
         }
     }
 };

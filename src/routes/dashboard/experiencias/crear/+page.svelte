@@ -300,6 +300,32 @@
 				return;
 			}
 
+			// Validar habitaciones
+			if (habitaciones.length > 0) {
+				for (let i = 0; i < habitaciones.length; i++) {
+					const hab = habitaciones[i];
+					if (!hab.nombre || hab.nombre.trim() === '') {
+						toast.error(`La habitación #${i + 1} debe tener un nombre`);
+						cargando = false;
+						return;
+					}
+					if (hab.precioPersona === undefined || hab.precioPersona === null || hab.precioPersona <= 0) {
+						toast.error(`El precio por persona de la habitación #${i + 1} (${hab.nombre || 'sin nombre'}) debe ser mayor a 0`);
+						cargando = false;
+						return;
+					}
+					if (!hab.capacidad || hab.capacidad <= 0) {
+						toast.error(`La capacidad de la habitación #${i + 1} (${hab.nombre || 'sin nombre'}) debe ser mayor a 0`);
+						cargando = false;
+						return;
+					}
+					// Calcular precioCuarto si no se pone (es 0, vacío, undefined, null, etc.)
+					if (!hab.precioCuarto || hab.precioCuarto <= 0) {
+						hab.precioCuarto = hab.capacidad * hab.precioPersona;
+					}
+				}
+			}
+
 			// 2. Subir portada primero
 			let urlPortada: string | null = null;
 			if (portadaNueva) {
@@ -393,7 +419,19 @@
 						if (habitacionesResult.type === 'success') {
 							toast.success(`Experiencia y ${habitaciones.length} habitación(es) creadas correctamente`);
 						} else {
-							toast.warning('Experiencia creada pero hubo error creando habitaciones');
+							let msg = 'Hubo un error al crear las habitaciones';
+							if (habitacionesResult.data) {
+								try {
+									const parsed = JSON.parse(habitacionesResult.data);
+									if (Array.isArray(parsed) && parsed.length > 0) {
+										const indices = parsed[0];
+										msg = typeof indices.message === 'number' ? parsed[indices.message] : (indices.message || msg);
+									} else if (parsed.message) {
+										msg = parsed.message;
+									}
+								} catch (e) {}
+							}
+							toast.warning(`Experiencia creada pero: ${msg}`);
 						}
 					} catch (error) {
 						console.error('Error creando habitaciones:', error);
@@ -898,6 +936,7 @@
 										type="text"
 										bind:value={habitacion.nombre}
 										disabled={cargando}
+										required
 										placeholder="Ej: Habitación Doble"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
 											rounded-lg text-white focus:outline-none focus:ring-2 
@@ -914,7 +953,8 @@
 										type="number"
 										bind:value={habitacion.precioPersona}
 										disabled={cargando}
-										min="0"
+										required
+										min="0.01"
 										step="0.01"
 										placeholder="0.00"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
@@ -926,7 +966,7 @@
 								<!-- Precio por Cuarto -->
 								<div>
 									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Precio por Cuarto <span class="text-red-500">*</span>
+										Precio por Cuarto <span class="text-neutral-400 text-xs">(Opcional)</span>
 									</label>
 									<input
 										type="number"
@@ -934,7 +974,7 @@
 										disabled={cargando}
 										min="0"
 										step="0.01"
-										placeholder="0.00"
+										placeholder="Dejar vacío para auto-calcular"
 										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
 											rounded-lg text-white focus:outline-none focus:ring-2 
 											focus:ring-green-600 disabled:opacity-50"
