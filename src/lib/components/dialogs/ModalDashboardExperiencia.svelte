@@ -90,102 +90,102 @@
 </script>
 
 {#if mostrar}
-	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-xl max-w-7xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
+		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-xl max-w-7xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
 			<!-- Header -->
-			<div class="flex justify-between items-center p-6 border-b border-green-700">
+			<div class="flex justify-between items-center p-4 sm:p-6 border-b border-green-700">
 				<div>
-					<h2 class="text-2xl font-bold text-white">📊 Dashboard de Experiencia</h2>
-					<p class="text-green-400 mt-1">{experienciaSeleccionada.titulo}</p>
+					<h2 class="text-lg sm:text-2xl font-bold text-white flex items-center gap-2">📊 <span class="truncate">Dashboard</span></h2>
+					<p class="text-xs sm:text-sm text-green-400 mt-1 truncate max-w-[200px] sm:max-w-md">{experienciaSeleccionada.titulo}</p>
 				</div>
 				<button
 					onclick={onClose}
-					class="text-neutral-400 hover:text-white transition text-2xl"
+					class="text-neutral-400 hover:text-white transition text-2xl p-1"
 				>
 					✕
 				</button>
 			</div>
 
 			<!-- Content -->
-			<div class="flex-1 overflow-y-auto p-6 space-y-6">
+			<div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
 				<!-- Métricas Generales -->
-				<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-6">
-					<h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-						<span class="text-2xl">📈</span> Métricas Generales
+				<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4 sm:p-6">
+					<h3 class="text-base sm:text-xl font-bold text-white mb-4 flex items-center gap-2">
+						<span class="text-xl sm:text-2xl">📈</span> Métricas Generales
 					</h3>
 
 					{#if metricas}
-						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+						<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 							<!-- Total Ventas -->
 							<div class="bg-neutral-900 rounded-lg p-4 border border-green-700/30">
-								<div class="text-neutral-400 text-sm mb-1">Total Ventas</div>
-								<div class="text-3xl font-bold text-white">{metricas.totalReservas}</div>
-								<div class="text-xs text-green-400 mt-1">
+								<div class="text-neutral-400 text-xs sm:text-sm mb-1">Total Ventas</div>
+								<div class="text-2xl sm:text-3xl font-bold text-white">{metricas.totalReservas}</div>
+								<div class="text-[10px] sm:text-xs text-green-400 mt-1">
 									{metricas.reservasConfirmadas} confirmadas
 								</div>
 							</div>
 
 							<!-- Revenue -->
 							<div class="bg-neutral-900 rounded-lg p-4 border border-green-700/30">
-								<div class="text-neutral-400 text-sm mb-1">Ingresos Totales</div>
-								<div class="text-2xl font-bold text-green-400">
+								<div class="text-neutral-400 text-xs sm:text-sm mb-1">Ingresos Totales</div>
+								<div class="text-xl sm:text-2xl font-bold text-green-400">
 									{formatearMoneda(metricas.totalRevenue)}
 								</div>
-								<div class="text-xs text-neutral-400 mt-1">
+								<div class="text-[10px] sm:text-xs text-neutral-400 mt-1">
 									{metricas.pagosLiquidados} liquidados
 								</div>
 							</div>
 
 							<!-- Ocupado -->
 							<div class="bg-neutral-900 rounded-lg p-4 border border-green-700/30">
-								<div class="text-neutral-400 text-sm mb-1">Ocupación</div>
-								<div class="text-3xl font-bold text-yellow-400">{ocupacionTotal()}%</div>
-								<div class="text-xs text-neutral-400 mt-1">
+								<div class="text-neutral-400 text-xs sm:text-sm mb-1">Ocupación</div>
+								<div class="text-2xl sm:text-3xl font-bold text-yellow-400">{ocupacionTotal()}%</div>
+								<div class="text-[10px] sm:text-xs text-neutral-400 mt-1">
 									{metricas.totalPersonas} personas
 								</div>
 							</div>
 
 							<!-- Disponible -->
 							<div class="bg-neutral-900 rounded-lg p-4 border border-green-700/30">
-								<div class="text-neutral-400 text-sm mb-1">Espacios Disponibles</div>
-								<div class="text-3xl font-bold text-blue-400">{disponiblesTotal()}</div>
-								<div class="text-xs text-neutral-400 mt-1">
+								<div class="text-neutral-400 text-xs sm:text-sm mb-1">Espacios Disponibles</div>
+								<div class="text-2xl sm:text-3xl font-bold text-blue-400">{disponiblesTotal()}</div>
+								<div class="text-[10px] sm:text-xs text-neutral-400 mt-1">
 									Capacidad: {experienciaSeleccionada.capacidad}
 								</div>
 							</div>
 						</div>
 
 						<!-- Métricas adicionales -->
-						<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+						<div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
 							<div class="bg-neutral-900 rounded-lg p-3 border border-green-700/30">
-								<div class="text-xs text-neutral-400">Clientes Únicos</div>
-								<div class="text-xl font-bold text-white">{metricas.clientesUnicos}</div>
+								<div class="text-[10px] sm:text-xs text-neutral-400">Clientes Únicos</div>
+								<div class="text-lg sm:text-xl font-bold text-white">{metricas.clientesUnicos}</div>
 							</div>
 							<div class="bg-neutral-900 rounded-lg p-3 border border-green-700/30">
-								<div class="text-xs text-neutral-400">Reservas Grupales</div>
-								<div class="text-xl font-bold text-white">{metricas.reservasGrupo}</div>
+								<div class="text-[10px] sm:text-xs text-neutral-400">Reservas Grupales</div>
+								<div class="text-lg sm:text-xl font-bold text-white">{metricas.reservasGrupo}</div>
 							</div>
 							<div class="bg-neutral-900 rounded-lg p-3 border border-green-700/30">
-								<div class="text-xs text-neutral-400">Pagos Pendientes</div>
-								<div class="text-xl font-bold text-orange-400">{metricas.pagosPendientes}</div>
+								<div class="text-[10px] sm:text-xs text-neutral-400">Pagos Pendientes</div>
+								<div class="text-lg sm:text-xl font-bold text-orange-400">{metricas.pagosPendientes}</div>
 							</div>
 						</div>
 					{:else}
-						<div class="text-center py-8 text-neutral-500">
+						<div class="text-center py-8 text-neutral-500 text-sm">
 							<p>No hay reservas para esta experiencia</p>
 						</div>
 					{/if}
 				</div>
 
 				<!-- Estado de Habitaciones -->
-				<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-6">
-					<h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
-						<span class="text-2xl">🏨</span> Estado de Habitaciones
+				<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4 sm:p-6">
+					<h3 class="text-base sm:text-xl font-bold text-white mb-4 flex items-center gap-2">
+						<span class="text-xl sm:text-2xl">🏨</span> Estado de Habitaciones
 					</h3>
 
 					{#if cargandoDatos}
-						<div class="flex items-center justify-center py-12">
-							<svg class="animate-spin h-10 w-10 text-green-500" viewBox="0 0 24 24">
+						<div class="flex items-center justify-center py-12 text-sm">
+							<svg class="animate-spin h-8 w-8 text-green-500" viewBox="0 0 24 24">
 								<circle
 									class="opacity-25"
 									cx="12"
@@ -204,7 +204,7 @@
 							<span class="ml-3 text-neutral-400">Cargando datos...</span>
 						</div>
 					{:else if habitacionesConEstado.length === 0}
-						<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
+						<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg text-sm">
 							<p>No hay habitaciones registradas para esta experiencia</p>
 						</div>
 					{:else}
@@ -212,18 +212,18 @@
 							{#each habitacionesConEstado as habitacion}
 								<div class="bg-neutral-900 rounded-lg p-4 border border-green-700/30">
 									<!-- Header de la habitación -->
-									<div class="flex justify-between items-start mb-3">
+									<div class="flex flex-col sm:flex-row justify-between sm:items-start mb-3 gap-2">
 										<div class="flex-1">
-											<h4 class="text-lg font-semibold text-white">{habitacion.nombre}</h4>
-											<p class="text-sm text-neutral-400">
+											<h4 class="text-base sm:text-lg font-semibold text-white">{habitacion.nombre}</h4>
+											<p class="text-xs sm:text-sm text-neutral-400">
 												{habitacion.cantidad_habitacion} habitación(es) • Capacidad: {habitacion.capacidad} persona(s)
 											</p>
 										</div>
-										<div class="text-right">
-											<div class="text-2xl font-bold text-green-400">
+										<div class="text-left sm:text-right">
+											<span class="text-xl sm:text-2xl font-bold text-green-400">
 												{habitacion.estadisticas.porcentajeOcupacion}%
-											</div>
-											<div class="text-xs text-neutral-400">Ocupación</div>
+											</span>
+											<span class="text-xs text-neutral-400 ml-1 sm:block sm:ml-0">Ocupación</span>
 										</div>
 									</div>
 
@@ -247,38 +247,38 @@
 									</div>
 
 									<!-- Estadísticas detalladas -->
-									<div class="grid grid-cols-3 gap-2 text-center">
+									<div class="grid grid-cols-3 gap-2 text-center text-xs sm:text-sm">
 										<div class="bg-neutral-800 rounded p-2">
-											<div class="text-xs text-neutral-400">Llenas</div>
-											<div class="text-lg font-bold text-red-400">
+											<div class="text-[10px] sm:text-xs text-neutral-400">Llenas</div>
+											<div class="text-base sm:text-lg font-bold text-red-400">
 												{habitacion.estadisticas.habitacionesLlenas}
 											</div>
 										</div>
 										<div class="bg-neutral-800 rounded p-2">
-											<div class="text-xs text-neutral-400">Parciales</div>
-											<div class="text-lg font-bold text-yellow-400">
+											<div class="text-[10px] sm:text-xs text-neutral-400">Parciales</div>
+											<div class="text-base sm:text-lg font-bold text-yellow-400">
 												{habitacion.estadisticas.habitacionesParciales}
 											</div>
 										</div>
 										<div class="bg-neutral-800 rounded p-2">
-											<div class="text-xs text-neutral-400">Vacías</div>
-											<div class="text-lg font-bold text-green-400">
+											<div class="text-[10px] sm:text-xs text-neutral-400">Vacías</div>
+											<div class="text-base sm:text-lg font-bold text-green-400">
 												{habitacion.estadisticas.habitacionesVacias}
 											</div>
 										</div>
 									</div>
 
 									<!-- Precio -->
-									<div class="mt-3 pt-3 border-t border-neutral-700 grid grid-cols-2 gap-2 text-sm">
+									<div class="mt-3 pt-3 border-t border-neutral-700 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm">
 										<div>
-											<span class="text-neutral-400">Precio/Persona:</span>
-											<span class="text-white font-medium ml-2">
+											<span class="text-neutral-400 font-medium">Precio/Persona:</span>
+											<span class="text-white ml-2">
 												{formatearMoneda(habitacion.precioPersona)}
 											</span>
 										</div>
 										<div>
-											<span class="text-neutral-400">Precio/Cuarto:</span>
-											<span class="text-white font-medium ml-2">
+											<span class="text-neutral-400 font-medium">Precio/Cuarto:</span>
+											<span class="text-white ml-2">
 												{formatearMoneda(habitacion.precioCuarto)}
 											</span>
 										</div>
@@ -294,7 +294,7 @@
 			<div class="p-4 border-t border-green-700 flex justify-end">
 				<button
 					onclick={onClose}
-					class="px-6 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg font-medium transition"
+					class="w-full sm:w-auto px-6 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg font-medium transition text-sm text-center"
 				>
 					Cerrar
 				</button>

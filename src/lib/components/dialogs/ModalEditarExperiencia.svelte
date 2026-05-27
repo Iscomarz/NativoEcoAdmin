@@ -602,8 +602,8 @@
 </script>
 
 {#if mostrar}
-	<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-		<div class="bg-neutral-900 border border-green-700 rounded-lg p-8 w-full max-h-[90vh] overflow-y-auto {tabActual === 'general' ? 'max-w-2xl' : 'max-w-6xl'}">
+	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
+		<div class="bg-neutral-900 border border-green-700 rounded-lg p-4 sm:p-6 w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto {tabActual === 'general' ? 'max-w-2xl' : 'max-w-6xl'}">
 			<form
 				method="POST"
 				action="?/actualizar"
@@ -611,16 +611,16 @@
 			>
 				<input type="hidden" name="id" value={experienciaSeleccionada.id} />
 				
-				<h2 class="text-2xl font-bold mb-4 text-white">
+				<h2 class="text-xl sm:text-2xl font-bold mb-4 text-white">
 					Editar: {experienciaSeleccionada.titulo}
 				</h2>
 
 				<!-- Switch de Tabs -->
-				<div class="flex gap-2 mb-6 p-1 bg-neutral-800 rounded-lg border border-green-700">
+				<div class="flex gap-1 sm:gap-2 mb-6 p-1 bg-neutral-800 rounded-lg border border-green-700">
 					<button
 						type="button"
 						onclick={() => tabActual = 'general'}
-						class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition {tabActual === 'general' 
+						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'general' 
 							? 'bg-green-700 text-white' 
 							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
 					>
@@ -629,7 +629,7 @@
 					<button
 						type="button"
 						onclick={() => tabActual = 'detalle'}
-						class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition {tabActual === 'detalle' 
+						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'detalle' 
 							? 'bg-green-700 text-white' 
 							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
 					>
@@ -638,7 +638,7 @@
 					<button 
 						type="button" 
 						onclick={() => tabActual = 'habitaciones'}
-						class="flex-1 px-4 py-2 rounded-md text-sm font-medium transition {tabActual === 'habitaciones' 
+						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'habitaciones' 
 							? 'bg-green-700 text-white' 
 							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
 						>
@@ -713,7 +713,7 @@
 										{#if optimizando}
 											<div class="text-green-400">⚡ Optimizando...</div>
 										{:else}
-											<div>📸 Seleccionar Portada</div>
+											<div class="text-sm font-medium">📸 Seleccionar Portada</div>
 											<div class="text-xs mt-1">Se optimizará automáticamente</div>
 										{/if}
 									</div>
@@ -735,7 +735,7 @@
 								name="titulo"
 								bind:value={experienciaSeleccionada.titulo}
 								required
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 							/>
 						</div>
 
@@ -746,7 +746,7 @@
 								bind:value={experienciaSeleccionada.descripcion}
 								required
 								rows="4"
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 								placeholder="Describe la experiencia..."
 							></textarea>
 						</div>
@@ -757,7 +757,7 @@
 								name="id_ubicacion"
 								bind:value={experienciaSeleccionada.id_ubicacion}
 								required
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 							>
 								<option value="">Selecciona una ubicación</option>
 								{#each ubicaciones as ubicacion}
@@ -766,7 +766,7 @@
 							</select>
 						</div>
 
-						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div>
 								<label class="block text-sm font-medium text-white mb-2">Fecha Inicio *</label>
 								<input
@@ -774,7 +774,7 @@
 									name="fecha_inicio"
 									bind:value={experienciaSeleccionada.fecha_inicio}
 									required
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 								/>
 							</div>
 
@@ -785,7 +785,7 @@
 									name="fecha_fin"
 									bind:value={experienciaSeleccionada.fecha_fin}
 									required
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 								/>
 							</div>
 						</div>
@@ -798,11 +798,11 @@
 								bind:value={experienciaSeleccionada.capacidad}
 								required
 								min="1"
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 							/>
 						</div>
 
-						<div class="flex flex-col gap-4">
+						<div class="flex flex-col gap-3">
 							<div class="flex items-center">
 								<!-- ✅ Hidden input para asegurar que siempre se envíe un valor -->
 								<input
@@ -849,7 +849,7 @@
 									bind:value={descripcionLarga}
 									rows="8"
 									maxlength="2000"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
 									placeholder="Descripción detallada de la experiencia..."
 								></textarea>
 								<p class="text-xs text-gray-400 mt-1">{descripcionLarga.length}/2000 caracteres</p>
@@ -861,7 +861,7 @@
 									type="text"
 									name="sede"
 									bind:value={sede}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 									placeholder="Ej: Hotel Marriott, Centro de la ciudad"
 								/>
 							</div>
@@ -872,7 +872,7 @@
 									type="url"
 									name="link_whatsapp"
 									bind:value={link_whatsapp}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
 									placeholder="https://chat.whatsapp.com/..."
 								/>
 							</div>
@@ -883,7 +883,7 @@
 									name="actividades"
 									bind:value={actividades}
 									rows="5"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
 									placeholder="Lista de actividades incluidas (una por línea)"
 								></textarea>
 							</div>
@@ -894,7 +894,7 @@
 									name="queIncluye"
 									bind:value={queIncluye}
 									rows="5"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none"
+									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
 									placeholder="Lista de items incluidos (una por línea)"
 								></textarea>
 							</div>
@@ -923,7 +923,7 @@
 											<svg class="w-8 h-8 mb-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
 											</svg>
-											<p class="mb-1 text-sm text-gray-400">
+											<p class="mb-1 text-sm text-gray-400 text-center px-4">
 												<span class="font-semibold">Click para subir</span> o arrastra imágenes
 											</p>
 											<p class="text-xs text-gray-500">
@@ -948,16 +948,16 @@
 
 								<!-- Preview de imágenes -->
 								{#if imagenesExistentes.length > 0 || previewsNuevas.length > 0}
-									<div class="grid grid-cols-3 gap-3 max-h-[450px] overflow-y-auto pr-2">
+									<div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[450px] overflow-y-auto pr-2">
 										<!-- Imágenes Existentes -->
 										{#each imagenesExistentes as urlImagen, index}
-											<div class="relative group">
+											<div class="relative group h-24">
 												<img 
 													src={urlImagen} 
 													alt="Imagen {index + 1}" 
-													class="w-full h-24 object-cover rounded-lg border border-green-700"
+													class="w-full h-full object-cover rounded-lg border border-green-700"
 												/>
-												<div class="absolute top-1 left-1 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">
+												<div class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">
 													Guardada
 												</div>
 												<button
@@ -975,13 +975,13 @@
 										
 										<!-- Imágenes Nuevas (Preview) -->
 										{#each previewsNuevas as preview, index}
-											<div class="relative group">
+											<div class="relative group h-24">
 												<img 
 													src={preview} 
 													alt="Nueva imagen {index + 1}" 
-													class="w-full h-24 object-cover rounded-lg border border-yellow-500"
+													class="w-full h-full object-cover rounded-lg border border-yellow-500"
 												/>
-												<div class="absolute top-1 left-1 bg-yellow-600 text-white text-xs px-2 py-0.5 rounded">
+												<div class="absolute top-1 left-1 bg-yellow-600 text-white text-[10px] px-1.5 py-0.5 rounded">
 													Nueva
 												</div>
 												<button
@@ -998,11 +998,11 @@
 										{/each}
 									</div>
 								{:else}
-									<div class="border-2 border-dashed border-green-700 rounded-lg p-8 text-center">
+									<div class="border-2 border-dashed border-green-700 rounded-lg p-8 text-center text-sm">
 										<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
 										</svg>
-										<p class="mt-2 text-sm text-gray-400">No hay imágenes seleccionadas</p>
+										<p class="mt-2 text-gray-400">No hay imágenes seleccionadas</p>
 									</div>
 								{/if}
 							</div>
@@ -1013,269 +1013,268 @@
 				<!-- Tab Habitaciones -->
 				<div class:hidden={tabActual !== 'habitaciones'}>
 					<!-- SECCIÓN: HABITACIONES -->
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<div class="flex justify-between items-center mb-4 pb-2 border-b border-green-700">
-				<h2 class="text-xl font-bold text-white">
-					🏠 Habitaciones
-				</h2>
-				<button
-					type="button"
-					onclick={agregarHabitacion}
-					disabled={cargando}
-					class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-						font-medium transition shadow-sm disabled:opacity-50 flex items-center gap-2"
-				>
-					➕ Agregar Habitación
-				</button>
-			</div>
-
-			{#if habitaciones.length === 0}
-				<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
-					<p>No hay habitaciones agregadas</p>
-					<p class="text-sm mt-1">Las habitaciones son opcionales</p>
-				</div>
-			{:else}
-				<div class="space-y-6">
-					{#each habitaciones as habitacion, index}
-						<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4">
-							<!-- Header de la habitación -->
-							<div class="flex justify-between items-center mb-4">
-								<h3 class="text-lg font-semibold text-white">
-									Habitación #{index + 1}
-								</h3>
-								<button
-									type="button"
-									onclick={() => eliminarHabitacion(index)}
-									disabled={cargando}
-									class="px-3 py-1 bg-red-700 hover:bg-red-600 text-white rounded 
-										text-sm transition disabled:opacity-50"
-								>
-									🗑️ Eliminar
-								</button>
-							</div>
-
-							<!-- Campos de la habitación -->
-							<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-								<!-- Nombre -->
-								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Nombre <span class="text-red-500">*</span>
-									</label>
-									<input
-										type="text"
-										bind:value={habitacion.nombre}
-										disabled={cargando}
-										required
-										placeholder="Ej: Habitación Doble"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
-									/>
-								</div>
-
-								<!-- Precio por Persona -->
-								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Precio por Persona <span class="text-red-500">*</span>
-									</label>
-									<input
-										type="number"
-										bind:value={habitacion.precioPersona}
-										disabled={cargando}
-										required
-										min="0.01"
-										step="0.01"
-										placeholder="0.00"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
-									/>
-								</div>
-
-								<!-- Precio por Cuarto -->
-								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Precio por Cuarto <span class="text-neutral-400 text-xs">(Opcional)</span>
-									</label>
-									<input
-										type="number"
-										bind:value={habitacion.precioCuarto}
-										disabled={cargando}
-										min="0"
-										step="0.01"
-										placeholder="Dejar vacío para auto-calcular"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
-									/>
-								</div>
-
-								<!-- Cantidad de Habitaciones -->
-								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Cantidad de Habitaciones <span class="text-red-500">*</span>
-									</label>
-									<input
-										type="number"
-										bind:value={habitacion.cantidad_habitacion}
-										disabled={cargando}
-										min="1"
-										placeholder="1"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
-									/>
-									<p class="text-xs text-neutral-400 mt-1">
-										Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo
-									</p>
-								</div>
-
-								<!-- Capacidad -->
-								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Capacidad (personas) <span class="text-red-500">*</span>
-									</label>
-									<input
-										type="number"
-										bind:value={habitacion.capacidad}
-										disabled={cargando}
-										min="1"
-										placeholder="1"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
-									/>
-								</div>
-							</div>
-
-							<!-- Descripción -->
-							<div class="mb-4">
-								<label class="block text-sm font-medium text-neutral-300 mb-2">
-									Descripción
-								</label>
-								<textarea
-									bind:value={habitacion.habitacion_descripcion}
-									disabled={cargando}
-									rows="3"
-									placeholder="Describe las características de la habitación..."
-									class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-										rounded-lg text-white focus:outline-none focus:ring-2 
-										focus:ring-green-600 disabled:opacity-50 resize-none"
-								></textarea>
-							</div>
-
-							<!-- Imágenes de la habitación -->
-							<div>
-								<label class="block text-sm font-medium text-neutral-300 mb-2">
-									Imágenes de la Habitación
-								</label>
-								
-								<label
-									class="inline-flex items-center px-4 py-2 bg-green-700/80 hover:bg-green-600 
-										text-white rounded-lg cursor-pointer transition font-medium text-sm"
-									class:opacity-50={cargando || optimizando}
-								>
-									{#if optimizando}
-										⚡ Optimizando...
-									{:else}
-										📸 Agregar Imágenes
-									{/if}
-									<input
-										type="file"
-										accept="image/*"
-										multiple
-										onchange={(e) => manejarImagenesHabitacion(e, index)}
-										disabled={cargando || optimizando}
-										class="hidden"
-									/>
-								</label>
-
-								<!-- Galería de imágenes existentes -->
-								{#if habitacion.imagenesExistentes.length > 0}
-									<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-										{#each habitacion.imagenesExistentes as img, imgIndex}
-											<div class="relative group">
-												<img
-													src={img}
-													alt="Habitación {index + 1} - Imagen {imgIndex + 1}"
-													class="w-full h-24 object-cover rounded border border-green-700/50"
-												/>
-												<span class="absolute top-2 right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
-													Guardada
-												</span>
-												<button
-													type="button"
-													onclick={() => eliminarImagenExistenteHabitacion(index, imgIndex)}
-													disabled={cargando}
-													class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-														transition flex items-center justify-center text-white text-sm"
-												>
-													🗑️
-												</button>
-											</div>
-										{/each}
-									</div>
-								{/if}
-
-								<!-- Galería de imágenes nuevas -->
-								{#if habitacion.previewsNuevas.length > 0}
-									<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
-										{#each habitacion.previewsNuevas as preview, imgIndex}
-											<div class="relative group">
-												<img
-													src={preview}
-													alt="Habitación {index + 1} - Nueva {imgIndex + 1}"
-													class="w-full h-24 object-cover rounded border border-green-700/50"
-												/>
-												<span class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded">
-													Nueva
-												</span>
-												<button
-													type="button"
-													onclick={() => eliminarImagenHabitacion(index, imgIndex)}
-													disabled={cargando}
-													class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-														transition flex items-center justify-center text-white text-sm"
-												>
-													🗑️
-												</button>
-											</div>
-										{/each}
-									</div>
-								{/if}
-
-								{#if habitacion.imagenesExistentes.length === 0 && habitacion.previewsNuevas.length === 0}
-									<p class="text-xs text-neutral-400 mt-2">
-										No hay imágenes para esta habitación
-									</p>
-								{/if}
-							</div>
+					<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
+						<div class="flex justify-between items-center mb-4 pb-2 border-b border-green-700">
+							<h2 class="text-xl font-bold text-white">
+								🏠 Habitaciones
+							</h2>
+							<button
+								type="button"
+								onclick={agregarHabitacion}
+								disabled={cargando}
+								class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
+									font-medium transition shadow-sm disabled:opacity-50 flex items-center gap-2"
+							>
+								➕ Agregar Habitación
+							</button>
 						</div>
-					{/each}
-				</div>
-			{/if}
-		</div>
 
-				</div>
+						{#if habitaciones.length === 0}
+							<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg text-sm">
+								<p>No hay habitaciones agregadas</p>
+								<p class="text-xs mt-1">Las habitaciones son opcionales</p>
+							</div>
+						{:else}
+							<div class="space-y-6">
+								{#each habitaciones as habitacion, index}
+									<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4">
+										<!-- Header de la habitación -->
+										<div class="flex justify-between items-center mb-4">
+											<h3 class="text-base sm:text-lg font-semibold text-white">
+												Habitación #{index + 1}
+											</h3>
+											<button
+												type="button"
+												onclick={() => eliminarHabitacion(index)}
+												disabled={cargando}
+												class="px-3 py-1 bg-red-700 hover:bg-red-600 text-white rounded 
+													text-sm transition disabled:opacity-50"
+											>
+												🗑️ Eliminar
+											</button>
+										</div>
 
-				<div class="flex space-x-3 mt-6">
-						<button
-							type="submit"
-							disabled={cargando}
-							class="flex-1 px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
-						>
-							{cargando ? 'Guardando...' : 'Guardar Cambios'}
-						</button>
-						<button
-							type="button"
-							onclick={onClose}
-							disabled={cargando}
-							class="flex-1 px-4 py-2 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg font-medium transition disabled:opacity-50"
-						>
-							Cancelar
-						</button>
+										<!-- Campos de la habitación -->
+										<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+											<!-- Nombre -->
+											<div>
+												<label class="block text-sm font-medium text-neutral-300 mb-2">
+													Nombre <span class="text-red-500">*</span>
+												</label>
+												<input
+													type="text"
+													bind:value={habitacion.nombre}
+													disabled={cargando}
+													required
+													placeholder="Ej: Habitación Doble"
+													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+														rounded-lg text-white focus:outline-none focus:ring-2 
+														focus:ring-green-600 disabled:opacity-50 text-sm"
+												/>
+											</div>
+
+											<!-- Precio por Persona -->
+											<div>
+												<label class="block text-sm font-medium text-neutral-300 mb-2">
+													Precio por Persona <span class="text-red-500">*</span>
+												</label>
+												<input
+													type="number"
+													bind:value={habitacion.precioPersona}
+													disabled={cargando}
+													required
+													min="0.01"
+													step="0.01"
+													placeholder="0.00"
+													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+														rounded-lg text-white focus:outline-none focus:ring-2 
+														focus:ring-green-600 disabled:opacity-50 text-sm"
+												/>
+											</div>
+
+											<!-- Precio por Cuarto -->
+											<div>
+												<label class="block text-sm font-medium text-neutral-300 mb-2">
+													Precio por Cuarto <span class="text-neutral-400 text-xs">(Opcional)</span>
+												</label>
+												<input
+													type="number"
+													bind:value={habitacion.precioCuarto}
+													disabled={cargando}
+													min="0"
+													step="0.01"
+													placeholder="Dejar vacío para auto-calcular"
+													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+														rounded-lg text-white focus:outline-none focus:ring-2 
+														focus:ring-green-600 disabled:opacity-50 text-sm"
+												/>
+											</div>
+
+											<!-- Cantidad de Habitaciones -->
+											<div>
+												<label class="block text-sm font-medium text-neutral-300 mb-2">
+													Cantidad de Habitaciones <span class="text-red-500">*</span>
+												</label>
+												<input
+													type="number"
+													bind:value={habitacion.cantidad_habitacion}
+													disabled={cargando}
+													min="1"
+													placeholder="1"
+													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+														rounded-lg text-white focus:outline-none focus:ring-2 
+														focus:ring-green-600 disabled:opacity-50 text-sm"
+												/>
+												<p class="text-xs text-neutral-400 mt-1">
+													Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo
+												</p>
+											</div>
+
+											<!-- Capacidad -->
+											<div>
+												<label class="block text-sm font-medium text-neutral-300 mb-2">
+													Capacidad (personas) <span class="text-red-500">*</span>
+												</label>
+												<input
+													type="number"
+													bind:value={habitacion.capacidad}
+													disabled={cargando}
+													min="1"
+													placeholder="1"
+													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+														rounded-lg text-white focus:outline-none focus:ring-2 
+														focus:ring-green-600 disabled:opacity-50 text-sm"
+												/>
+											</div>
+										</div>
+
+										<!-- Descripción -->
+										<div class="mb-4">
+											<label class="block text-sm font-medium text-neutral-300 mb-2">
+												Descripción
+											</label>
+											<textarea
+												bind:value={habitacion.habitacion_descripcion}
+												disabled={cargando}
+												rows="3"
+												placeholder="Describe las características de la habitación..."
+												class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
+													rounded-lg text-white focus:outline-none focus:ring-2 
+													focus:ring-green-600 disabled:opacity-50 resize-none text-sm"
+											></textarea>
+										</div>
+
+										<!-- Imágenes de la habitación -->
+										<div>
+											<label class="block text-sm font-medium text-neutral-300 mb-2">
+												Imágenes de la Habitación
+											</label>
+											
+											<label
+												class="inline-flex items-center px-4 py-2 bg-green-700/80 hover:bg-green-600 
+													text-white rounded-lg cursor-pointer transition font-medium text-sm"
+												class:opacity-50={cargando || optimizando}
+											>
+												{#if optimizando}
+													⚡ Optimizando...
+												{:else}
+													📸 Agregar Imágenes
+												{/if}
+												<input
+													type="file"
+													accept="image/*"
+													multiple
+													onchange={(e) => manejarImagenesHabitacion(e, index)}
+													disabled={cargando || optimizando}
+													class="hidden"
+												/>
+											</label>
+
+											<!-- Galería de imágenes existentes -->
+											{#if habitacion.imagenesExistentes.length > 0}
+												<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+													{#each habitacion.imagenesExistentes as img, imgIndex}
+														<div class="relative group h-24">
+															<img
+																src={img}
+																alt="Habitación {index + 1} - Imagen {imgIndex + 1}"
+																class="w-full h-full object-cover rounded border border-green-700/50"
+															/>
+															<span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+																Guardada
+															</span>
+															<button
+																type="button"
+																onclick={() => eliminarImagenExistenteHabitacion(index, imgIndex)}
+																disabled={cargando}
+																class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
+																	transition flex items-center justify-center text-white text-sm"
+															>
+																🗑️
+															</button>
+														</div>
+													{/each}
+												</div>
+											{/if}
+
+											<!-- Galería de imágenes nuevas -->
+											{#if habitacion.previewsNuevas.length > 0}
+												<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+													{#each habitacion.previewsNuevas as preview, imgIndex}
+														<div class="relative group h-24">
+															<img
+																src={preview}
+																alt="Habitación {index + 1} - Nueva {imgIndex + 1}"
+																class="w-full h-full object-cover rounded border border-green-700/50"
+															/>
+															<span class="absolute top-2 right-2 bg-yellow-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+																Nueva
+															</span>
+															<button
+																type="button"
+																onclick={() => eliminarImagenHabitacion(index, imgIndex)}
+																disabled={cargando}
+																class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
+																	transition flex items-center justify-center text-white text-sm"
+															>
+																🗑️
+															</button>
+														</div>
+													{/each}
+												</div>
+											{/if}
+
+											{#if habitacion.imagenesExistentes.length === 0 && habitacion.previewsNuevas.length === 0}
+												<p class="text-xs text-neutral-400 mt-2">
+													No hay imágenes para esta habitación
+												</p>
+											{/if}
+										</div>
+									</div>
+								{/each}
+							</div>
+						{/if}
 					</div>
-				</form>
-			</div>
+				</div>
+
+				<div class="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6">
+					<button
+						type="submit"
+						disabled={cargando}
+						class="w-full sm:flex-1 px-4 py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed text-sm text-center"
+					>
+						{cargando ? 'Guardando...' : 'Guardar Cambios'}
+					</button>
+					<button
+						type="button"
+						onclick={onClose}
+						disabled={cargando}
+						class="w-full sm:flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg font-medium transition disabled:opacity-50 text-sm text-center"
+					>
+						Cancelar
+					</button>
+				</div>
+			</form>
 		</div>
-	{/if}
+	</div>
+{/if}

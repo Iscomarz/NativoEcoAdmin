@@ -205,7 +205,7 @@ export async function eliminarExperiencia(id: number, supabaseClient: any): Prom
         if (exp?.portada_experiencia) allImages.push(exp.portada_experiencia);
         if (det?.imagenes) allImages.push(...det.imagenes);
         if (habs) {
-            habs.forEach(h => {
+            habs.forEach((h: any) => {
                 if (h.imagenes) allImages.push(...h.imagenes);
             });
         }
@@ -219,7 +219,7 @@ export async function eliminarExperiencia(id: number, supabaseClient: any): Prom
             .eq('idexperiencia', id);
         
         if (habitaciones && habitaciones.length > 0) {
-            const ids = habitaciones.map(h => h.id);
+            const ids = habitaciones.map((h: any) => h.id);
             await supabaseClient
                 .from('dhabitacion')
                 .delete()

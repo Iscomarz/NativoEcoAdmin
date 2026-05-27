@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { menuState } from '$lib/stores/menu';
+	import { sidebarOpen } from '$lib/stores/sidebar';
 
 	const openMenus = $derived($menuState);
 	const currentPath = $derived($page.url.pathname);
+	const isOpen = $derived($sidebarOpen);
 
 	interface MenuItem {
 		title: string;
@@ -54,9 +56,43 @@
 	function isActive(path: string): boolean {
 		return currentPath === path;
 	}
+
+	// Cierra automáticamente el sidebar al cambiar de ruta
+	$effect(() => {
+		if (currentPath) {
+			sidebarOpen.close();
+		}
+	});
 </script>
 
-<aside class="w-64 bg-black border-r border-green-700 text-white h-screen fixed left-0 top-16 overflow-y-auto">
+{#if isOpen}
+	<!-- Backdrop para móvil -->
+	<button
+		type="button"
+		class="fixed inset-0 bg-neutral-950/60 z-40 lg:hidden transition-opacity duration-300"
+		onclick={() => sidebarOpen.close()}
+		aria-label="Cerrar menú"
+	></button>
+{/if}
+
+<aside
+	class="w-64 bg-black border-r border-green-700 text-white h-screen fixed left-0 top-0 lg:top-16 overflow-y-auto z-50 lg:z-20 transition-transform duration-300 ease-in-out
+	{isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}"
+>
+	<!-- Cabecera del Sidebar visible solo en móvil para poder cerrar -->
+	<div class="p-4 flex items-center justify-between border-b border-green-700/30 lg:hidden">
+		<span class="font-bold text-lg text-white">Nativo Tours</span>
+		<button
+			onclick={() => sidebarOpen.close()}
+			class="p-2 hover:bg-neutral-950 rounded-lg text-gray-400 hover:text-white transition-colors"
+			aria-label="Cerrar menú"
+		>
+			<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		</button>
+	</div>
+
 	<nav class="p-4 space-y-2">
 		{#each menuItems as item}
 			{#if item.path}
@@ -110,3 +146,4 @@
 		{/each}
 	</nav>
 </aside>
+

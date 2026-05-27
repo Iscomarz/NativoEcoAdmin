@@ -60,7 +60,7 @@
 	<div class="min-h-screen bg-neutral-950">
 		<Header />
 		<Sidebar />
-		<main class="ml-64 mt-16 p-6">
+		<main class="lg:ml-64 mt-16 p-4 sm:p-6">
 			<div class="max-w-7xl mx-auto">
 				{@render children()}
 			</div>

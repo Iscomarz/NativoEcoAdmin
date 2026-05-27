@@ -39,9 +39,9 @@ export const actions: Actions = {
                 fecha_fin: formData.get('fecha_fin') as string,
                 capacidad: Number(formData.get('capacidad')),
                 activo: formData.get('activo') === 'true',
+                oculto: formData.get('oculto') === 'true',
                 id_ubicacion: Number(formData.get('id_ubicacion')),
-                portada_experiencia: (formData.get('portada_experiencia') as string) || undefined,
-                oculto: false,
+                portada_experiencia: (formData.get('portada_experiencia') as string) || undefined
             };
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
