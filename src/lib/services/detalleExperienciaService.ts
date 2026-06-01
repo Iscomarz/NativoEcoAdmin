@@ -15,9 +15,9 @@ const TABLA_DETALLE = 'dexperiencia';
 /**
  * Obtener el detalle de una experiencia por ID de experiencia
  */
-export async function obtenerDetalleExperienciaPorIdExperiencia(idexperiencia: number): Promise<DetalleExperiencia> {
+export async function obtenerDetalleExperienciaPorIdExperiencia(idexperiencia: number, supabaseClient = supabase): Promise<DetalleExperiencia> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_DETALLE)
             .select('*')
             .eq('idexperiencia', idexperiencia)

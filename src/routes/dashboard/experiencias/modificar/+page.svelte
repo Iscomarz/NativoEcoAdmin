@@ -4,10 +4,6 @@
 	import type { DetalleExperiencia } from "$lib/services/detalleExperienciaService";
 	import type { mreserva } from "$lib/services/reservasService";
 	import { toast } from "svelte-sonner";
-	import { obtenerExperiencias } from '$lib/services/experienciasService';
-	import { obtenerDetalleExperienciaPorIdExperiencia } from '$lib/services/detalleExperienciaService';
-	import { obtenerHabitacionesByIdExperiencia } from '$lib/services/habitacionesService';
-	import {obtenerReservasByExperiencia} from '$lib/services/reservasService';
 	import type { chabitacion } from '$lib/services/habitacionesService';
 	import ModalEditarExperiencia from '$lib/components/dialogs/ModalEditarExperiencia.svelte';
 	import ModalDashboardExperiencia from "$lib/components/dialogs/ModalDashboardExperiencia.svelte";
@@ -36,21 +32,51 @@
 		const detalle = await agregarDetalleExperiencia(experienciaSeleccionada.id!);
 
 		// Cargar habitaciones asociadas
-		habitacionesExperienciaSeleccionada = await obtenerHabitacionesByIdExperiencia(experienciaSeleccionada.id!);
+		try {
+			const resHab = await fetch(`/api/experiencias/${experienciaSeleccionada.id}/habitaciones`);
+			if (resHab.ok) {
+				habitacionesExperienciaSeleccionada = await resHab.json();
+			} else {
+				habitacionesExperienciaSeleccionada = [];
+			}
+		} catch (err) {
+			console.error('Error cargando habitaciones:', err);
+			habitacionesExperienciaSeleccionada = [];
+		}
+		
 		experienciaSeleccionada.detalle_experiencia = detalle ?? undefined;
 
 		if(tipo === "editar"){
 			mostrarModal = true;
 		}else if(tipo === "dashboard"){
 			//cargar reservas 
-			reservasExperienciaSeleccionada = await obtenerReservasByExperiencia(experienciaSeleccionada.id!);
+			try {
+				const resRes = await fetch(`/api/experiencias/${experienciaSeleccionada.id}/reservas`);
+				if (resRes.ok) {
+					reservasExperienciaSeleccionada = await resRes.json();
+				} else {
+					reservasExperienciaSeleccionada = [];
+				}
+			} catch (err) {
+				console.error('Error cargando reservas:', err);
+				reservasExperienciaSeleccionada = [];
+			}
 			mostrarDashboard = true;
 		}else if(tipo === "reservas"){
 			//cargar reservas 
-			reservasExperienciaSeleccionada = await obtenerReservasByExperiencia(experienciaSeleccionada.id!);
+			try {
+				const resRes = await fetch(`/api/experiencias/${experienciaSeleccionada.id}/reservas`);
+				if (resRes.ok) {
+					reservasExperienciaSeleccionada = await resRes.json();
+				} else {
+					reservasExperienciaSeleccionada = [];
+				}
+			} catch (err) {
+				console.error('Error cargando reservas:', err);
+				reservasExperienciaSeleccionada = [];
+			}
 			mostrarReservas = true;
 		}
-		
 	}
 
 	function cerrarModal() {
@@ -60,7 +86,9 @@
 
 	async function agregarDetalleExperiencia(id:number): Promise<DetalleExperiencia | null> {
 		try {
-			const detalle: DetalleExperiencia = await obtenerDetalleExperienciaPorIdExperiencia(id);
+			const res = await fetch(`/api/experiencias/${id}/detalle`);
+			if (!res.ok) throw new Error('Error al obtener detalle');
+			const detalle: DetalleExperiencia = await res.json();
 			return detalle;
 		} catch (error) {
 			console.error('Error al obtener el detalle de la experiencia:', error);
@@ -70,7 +98,9 @@
 
 	async function recargarExperiencias() {
 		try {
-			const nuevasExperiencias = await obtenerExperiencias();
+			const res = await fetch('/api/experiencias');
+			if (!res.ok) throw new Error('Error al recargar');
+			const nuevasExperiencias = await res.json();
 			experiencias = nuevasExperiencias;
 		} catch (error) {
 			console.error('Error recargando experiencias:', error);

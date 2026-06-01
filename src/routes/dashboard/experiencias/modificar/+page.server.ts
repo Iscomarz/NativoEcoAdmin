@@ -11,10 +11,10 @@ export const prerender = false;
 // Load function para cargar datos iniciales
 export const load: PageServerLoad = async ({ locals }) => {
     try {
-        // Usar el cliente de Supabase del servidor (con acceso a cookies)
-        const experiencias: Experiencia[] = await obtenerExperiencias();
+        // Usar el cliente de Supabase del servidor (con acceso a cookies y service_role)
+        const experiencias: Experiencia[] = await obtenerExperiencias(locals.supabase);
 
-        const ubicaciones: Ubicacion[] = await obtenerUbicaciones();
+        const ubicaciones: Ubicacion[] = await obtenerUbicaciones(locals.supabase);
 
         return {
             experiencias: experiencias || [],
@@ -86,18 +86,27 @@ export const actions: Actions = {
             };
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
+            let seDebeNotificar = false;
             if (datosActualizados.activo) {
-                const experienciaActiva = await obtenerExperienciaActiva();
+                const { verificarYDesactivarExperienciaActivaCaducada } = await import('$lib/services/experienciasService');
+                const puedeActivar = await verificarYDesactivarExperienciaActivaCaducada(locals.supabase, id);
 
-                // Si hay una experiencia activa y NO es la que estamos editando
-                if (experienciaActiva && experienciaActiva.id !== id) {
-                    console.log('⚠️ Intento de activar experiencia cuando ya existe otra activa');
-                    console.log('   Experiencia activa actual:', experienciaActiva.titulo);
+                if (!puedeActivar) {
+                    const experienciaActiva = await obtenerExperienciaActiva();
+                    const tituloActiva = experienciaActiva ? experienciaActiva.titulo : 'Otra experiencia';
+                    console.log('⚠️ Intento de activar experiencia cuando ya existe otra activa y vigente');
 
                     return fail(400, {
-                        message: `Ya existe una experiencia activa: "${experienciaActiva.titulo}". Desactívala primero para poder activar esta.`,
-                        tituloActiva: experienciaActiva.titulo
+                        message: `Ya existe una experiencia activa y vigente: "${tituloActiva}". Desactívala primero para poder activar esta.`,
+                        tituloActiva
                     });
+                }
+
+                // Averiguar si la experiencia NO estaba activa antes (es decir, se está activando ahora)
+                const { obtenerExperienciaPorId } = await import('$lib/services/experienciasService');
+                const expPrevia = await obtenerExperienciaPorId(id);
+                if (expPrevia && !expPrevia.activo) {
+                    seDebeNotificar = true;
                 }
             }
 
@@ -124,6 +133,15 @@ export const actions: Actions = {
 
             // Usar el cliente de Supabase del servidor con la sesión del usuario
             await actualizarExperiencia(id, datosActualizados, detalleActualizado, locals.supabase);
+
+            // Si cambió a activa, enviar las notificaciones a clientes interesados
+            if (seDebeNotificar) {
+                const { notificarClientesInteresados } = await import('$lib/services/experienciasService');
+                notificarClientesInteresados(
+                    id,
+                    locals.supabase
+                ).catch(err => console.error('Error al notificar clientes:', err));
+            }
 
             return { success: true, message: 'Experiencia actualizada correctamente' };
         } catch (error) {

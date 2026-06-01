@@ -2,12 +2,13 @@ import { createServerClient } from '@supabase/ssr';
 import { type Handle, redirect } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/public';
+import { SUPABASE_SERVICE_ROLE_KEY } from '$env/static/private';
 
 
 const supabase: Handle = async ({ event, resolve }) => {
     event.locals.supabase = createServerClient(
         PUBLIC_SUPABASE_URL,
-        PUBLIC_SUPABASE_ANON_KEY,
+        SUPABASE_SERVICE_ROLE_KEY || PUBLIC_SUPABASE_ANON_KEY,
         {
             cookies: {
                 getAll: () => event.cookies.getAll(),

@@ -11,7 +11,7 @@ export const prerender = false;
 // Load function para cargar ubicaciones
 export const load: PageServerLoad = async ({ locals }) => {
     try {
-        const ubicaciones: Ubicacion[] = await obtenerUbicaciones();
+        const ubicaciones: Ubicacion[] = await obtenerUbicaciones(locals.supabase);
 
         return {
             ubicaciones: ubicaciones || [],
@@ -75,15 +75,17 @@ export const actions: Actions = {
 
             // ✅ VALIDACIÓN: Solo puede haber una experiencia activa a la vez
             if (nuevaExperiencia.activo) {
-                const experienciaActiva = await obtenerExperienciaActiva();
+                const { verificarYDesactivarExperienciaActivaCaducada } = await import('$lib/services/experienciasService');
+                const puedeActivar = await verificarYDesactivarExperienciaActivaCaducada(locals.supabase);
 
-                if (experienciaActiva) {
-                    console.log('⚠️ Intento de crear experiencia activa cuando ya existe otra');
-                    console.log('   Experiencia activa actual:', experienciaActiva.titulo);
+                if (!puedeActivar) {
+                    const experienciaActiva = await obtenerExperienciaActiva();
+                    const tituloActiva = experienciaActiva ? experienciaActiva.titulo : 'Otra experiencia';
+                    console.log('⚠️ Intento de crear experiencia activa cuando ya existe otra activa y vigente');
 
                     return fail(400, {
-                        message: `Ya existe una experiencia activa: "${experienciaActiva.titulo}". Desactívala primero para poder activar esta.`,
-                        tituloActiva: experienciaActiva.titulo
+                        message: `Ya existe una experiencia activa y vigente: "${tituloActiva}". Desactívala primero para poder activar esta.`,
+                        tituloActiva
                     });
                 }
             }
@@ -113,6 +115,15 @@ export const actions: Actions = {
 
             // Crear experiencia
             const experienciaCreada = await crearExperiencia(nuevaExperiencia, detalleExperiencia, locals.supabase);
+
+            // Notificar a clientes interesados si la experiencia se activa
+            if (nuevaExperiencia.activo && experienciaCreada.id) {
+                const { notificarClientesInteresados } = await import('$lib/services/experienciasService');
+                notificarClientesInteresados(
+                    experienciaCreada.id,
+                    locals.supabase
+                ).catch(err => console.error('Error al notificar clientes:', err));
+            }
 
             return {
                 success: true,

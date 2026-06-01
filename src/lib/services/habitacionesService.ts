@@ -67,9 +67,9 @@ export async function crearHabitacion(nuevaHabitacion: chabitacion, detalleHabit
 /**
  * Obtener habitaciones por ID experiencia
  */
-export async function obtenerHabitacionesByIdExperiencia(idExp: number): Promise<chabitacion[]> {
+export async function obtenerHabitacionesByIdExperiencia(idExp: number, supabaseClient = supabase): Promise<chabitacion[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_HABITACIONES)
             .select('*')
             .eq('idexperiencia', idExp);
@@ -106,11 +106,12 @@ export interface HabitacionConEstado extends chabitacion {
  * Obtener habitaciones con detalles y estadísticas de ocupación
  */
 export async function obtenerEstadoHabitacionesPorExperiencia(
-    idExp: number
+    idExp: number,
+    supabaseClient = supabase
 ): Promise<HabitacionConEstado[]> {
     try {
         // 1. Obtener habitaciones
-        const { data: habitaciones, error: errorHab } = await supabase
+        const { data: habitaciones, error: errorHab } = await supabaseClient
             .from(TABLA_HABITACIONES)
             .select('*')
             .eq('idexperiencia', idExp);
@@ -121,7 +122,7 @@ export async function obtenerEstadoHabitacionesPorExperiencia(
         // 2. Obtener detalles de cada habitación y calcular estadísticas
         const habitacionesConEstado = await Promise.all(
             habitaciones.map(async (hab) => {
-                const { data: detalles, error: errorDet } = await supabase
+                const { data: detalles, error: errorDet } = await supabaseClient
                     .from(TABLA_DETALLE_HABITACIONES)
                     .select('*')
                     .eq('id_chabitacion', hab.id);

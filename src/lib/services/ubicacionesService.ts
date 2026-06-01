@@ -26,9 +26,9 @@ const TABLA_UBICACIONES = 'cubicacion';
 /**
  * Obtener todas las ubicaciones con detalle
  */
-export async function obtenerUbicacionesConDetalle(): Promise<Ubicacion[]> {
+export async function obtenerUbicacionesConDetalle(supabaseClient = supabase): Promise<Ubicacion[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .select('*, detalle_ubicacion:dubicacion(*)')
             .order('nombre_ubicacion', { ascending: true });
@@ -44,9 +44,9 @@ export async function obtenerUbicacionesConDetalle(): Promise<Ubicacion[]> {
 /**
  * Obtener una ubicación por ID con su detalle
  */
-export async function obtenerUbicacionConDetalle(id: number): Promise<Ubicacion | null> {
+export async function obtenerUbicacionConDetalle(id: number, supabaseClient = supabase): Promise<Ubicacion | null> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .select('*, detalle_ubicacion:dubicacion(*)')
             .eq('id_ubicacion', id)
@@ -118,9 +118,9 @@ export async function actualizarUbicacionConDetalle(
 /**
  * Obtener todas las ubicaciones
  */
-export async function obtenerUbicaciones(): Promise<Ubicacion[]> {
+export async function obtenerUbicaciones(supabaseClient = supabase): Promise<Ubicacion[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .select('*')
             .order('nombre_ubicacion', { ascending: true });
@@ -136,9 +136,9 @@ export async function obtenerUbicaciones(): Promise<Ubicacion[]> {
 /**
  * Obtener una ubicación por ID
  */
-export async function obtenerUbicacionPorId(id: number): Promise<Ubicacion | null> {
+export async function obtenerUbicacionPorId(id: number, supabaseClient = supabase): Promise<Ubicacion | null> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .select('*')
             .eq('id', id)
@@ -279,9 +279,9 @@ export async function eliminarUbicacion(id: number, supabaseClient: any): Promis
 /**
  * Obtener ubicaciones activas
  */
-export async function obtenerUbicacionesActivas(): Promise<Ubicacion[]> {
+export async function obtenerUbicacionesActivas(supabaseClient = supabase): Promise<Ubicacion[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_UBICACIONES)
             .select('*')
             .eq('activo', true)

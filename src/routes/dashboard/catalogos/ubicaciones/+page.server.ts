@@ -6,7 +6,7 @@ export const prerender = false;
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
-        const ubicaciones = await obtenerUbicacionesConDetalle();
+        const ubicaciones = await obtenerUbicacionesConDetalle(locals.supabase);
 
         return {
             ubicaciones: ubicaciones || [],

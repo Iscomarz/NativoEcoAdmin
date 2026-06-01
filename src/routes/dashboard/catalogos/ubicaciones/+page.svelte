@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import type { Ubicacion } from '$lib/services/ubicacionesService';
-	import { obtenerUbicacionConDetalle } from '$lib/services/ubicacionesService';
 	import ModalEditarUbicacion from '$lib/components/dialogs/ModalEditarUbicacion.svelte';
 	import { toast } from 'svelte-sonner';
 
@@ -21,8 +20,11 @@
 	async function seleccionarUbicacion(ubicacion: Ubicacion) {
 		try {
 			cargando = true;
-			// Cargar detalle completo
-			const ubicacionCompleta = await obtenerUbicacionConDetalle(ubicacion.id_ubicacion);
+			// Cargar detalle completo desde la API del servidor
+			const res = await fetch(`/api/ubicaciones/${ubicacion.id_ubicacion}/detalle`);
+			if (!res.ok) throw new Error('Error al cargar detalle');
+			const ubicacionCompleta = await res.json();
+			
 			if (ubicacionCompleta) {
 				ubicacionSeleccionada = ubicacionCompleta;
 				modoCrear = false;
@@ -50,9 +52,10 @@
 
 	async function recargarUbicaciones() {
 		try {
-			// Recargar datos sin refrescar la página
-			const { obtenerUbicacionesConDetalle } = await import('$lib/services/ubicacionesService');
-			const ubicacionesActualizadas = await obtenerUbicacionesConDetalle();
+			// Recargar datos sin refrescar la página llamando a la API del servidor
+			const res = await fetch('/api/ubicaciones?conDetalle=true');
+			if (!res.ok) throw new Error('Error al recargar');
+			const ubicacionesActualizadas = await res.json();
 			ubicaciones = ubicacionesActualizadas;
 		} catch (error) {
 			console.error('Error recargando ubicaciones:', error);

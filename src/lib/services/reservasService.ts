@@ -25,9 +25,9 @@ const TABLA_RESERVAS = "mreserva";
  * Obtener reservas por experiencia ID
  */
 
-export async function obtenerReservasByExperiencia(idExperiencia: number): Promise<mreserva[]> {
+export async function obtenerReservasByExperiencia(idExperiencia: number, supabaseClient = supabase): Promise<mreserva[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_RESERVAS)
             .select("*")
             .eq("experiencia_id", idExperiencia)
@@ -44,9 +44,9 @@ export async function obtenerReservasByExperiencia(idExperiencia: number): Promi
 /**
  * Obtener todas las reservas de la base de datos
  */
-export async function obtenerTodasLasReservas(): Promise<mreserva[]> {
+export async function obtenerTodasLasReservas(supabaseClient = supabase): Promise<mreserva[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_RESERVAS)
             .select("*")
             .order("fecha_reserva", { ascending: false });
@@ -62,9 +62,9 @@ export async function obtenerTodasLasReservas(): Promise<mreserva[]> {
 /**
  * Obtener todas las reservas de la base de datos junto con el título de su experiencia
  */
-export async function obtenerReservasConExperiencia(): Promise<any[]> {
+export async function obtenerReservasConExperiencia(supabaseClient = supabase): Promise<any[]> {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from(TABLA_RESERVAS)
             .select("*, cexperiencia(titulo)")
             .order("fecha_reserva", { ascending: false });

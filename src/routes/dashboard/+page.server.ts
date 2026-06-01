@@ -10,11 +10,11 @@ export const prerender = false;
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
-        // Ejecutar las consultas de manera paralela para mejorar el tiempo de respuesta
+        // Ejecutar las consultas de manera paralela para mejorar el tiempo de respuesta usando la Service Role Key (vía locals.supabase)
         const [experiencias, ubicaciones, reservas] = await Promise.all([
-            obtenerExperiencias(),
-            obtenerUbicaciones(),
-            obtenerTodasLasReservas()
+            obtenerExperiencias(locals.supabase),
+            obtenerUbicaciones(locals.supabase),
+            obtenerTodasLasReservas(locals.supabase)
         ]);
 
         return {
