@@ -38,6 +38,8 @@
 		"vite-plugin-devtools-json": "^1.0.0"
 	},
 	"dependencies": {
+    "phosphor-svelte": "^1.4.2",
+
 		"@supabase/ssr": "^0.8.0",
 		"@supabase/supabase-js": "^2.87.0",
 		"resend": "^6.12.4",

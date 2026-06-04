@@ -2,6 +2,7 @@
 	import { auth } from '$lib/stores/auth';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
+	import logoNativo from '$lib/assets/logos/logoNativo.png';
 
 	let email = '';
 	let password = '';
@@ -60,16 +61,24 @@
 	}
 </script>
 
-<div class="min-h-screen flex items-center justify-center bg-black">
-	<div class="bg-neutral-900 rounded-lg shadow-2xl p-8 w-full max-w-md border border-green-700">
+<div class="min-h-screen flex items-center justify-center bg-body px-4">
+	<!-- Decorative background elements -->
+	<div class="fixed inset-0 pointer-events-none overflow-hidden">
+		<div class="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/5 rounded-full blur-3xl"></div>
+		<div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-brand-600/4 rounded-full blur-3xl"></div>
+	</div>
+
+	<div class="glass-card-strong p-8 sm:p-10 w-full max-w-md relative z-10 animate-slide-up">
 		<div class="text-center mb-8">
-			<h1 class="text-3xl font-bold text-white mb-2">Nativo Tours</h1>
-			<p class="text-green-400">Administración</p>
+			<div class="flex justify-center mb-3">
+				<img src={logoNativo} alt="Nativo Tours" class="h-20 w-auto object-contain" />
+			</div>
+			<p class="text-white/50 text-sm tracking-wider">Nativo Tours Admin</p>
 		</div>
 
-		<form on:submit={handleSubmit} class="space-y-6">
+		<form on:submit={handleSubmit} class="space-y-5">
 			<div>
-				<label for="email" class="block text-sm font-medium text-white mb-2">
+				<label for="email" class="block text-sm font-medium text-white/80 mb-2">
 					Correo Electrónico
 				</label>
 				<input
@@ -78,13 +87,15 @@
 					bind:value={email}
 					required
 					disabled={loading}
-					class="w-full px-4 py-3 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition disabled:opacity-50"
+					class="premium-input w-full px-4 py-3"
 					placeholder="tu@email.com"
 				/>
 			</div>
 
 			<div>
-				<label for="password" class="block text-sm font-medium text-white mb-2"> Contraseña </label>
+				<label for="password" class="block text-sm font-medium text-white/80 mb-2">
+					Contraseña
+				</label>
 				<input
 					type="password"
 					id="password"
@@ -92,22 +103,20 @@
 					required
 					minlength="6"
 					disabled={loading}
-					class="w-full px-4 py-3 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition disabled:opacity-50"
+					class="premium-input w-full px-4 py-3"
 					placeholder="••••••••"
 				/>
 			</div>
 
 			{#if error}
-				<div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg text-sm">
+				<div
+					class="bg-red-500/10 border border-red-500/25 text-red-300 px-4 py-3 rounded-[var(--radius-input)] text-sm"
+				>
 					{error}
 				</div>
 			{/if}
 
-			<button
-				type="submit"
-				disabled={loading}
-				class="w-full bg-green-700 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
-			>
+			<button type="submit" disabled={loading} class="btn-primary w-full py-3 text-sm">
 				{#if loading}
 					<span>Cargando...</span>
 				{:else}
@@ -121,7 +130,7 @@
 				type="button"
 				on:click={toggleForm}
 				disabled={loading}
-				class="text-sm text-green-400 hover:text-green-300 transition disabled:opacity-50"
+				class="text-sm text-brand-400 hover:text-brand-300 transition disabled:opacity-50"
 			>
 				{showSignup
 					? '¿Ya tienes cuenta? Inicia sesión'
@@ -129,15 +138,8 @@
 			</button>
 		</div> -->
 
-		<div class="mt-6 text-center text-sm text-gray-400">
+		<div class="mt-8 text-center text-xs text-white/25">
 			<p>Versión 1.0.0</p>
 		</div>
 	</div>
 </div>
-
-<style>
-	:global(body) {
-		margin: 0;
-		padding: 0;
-	}
-</style>

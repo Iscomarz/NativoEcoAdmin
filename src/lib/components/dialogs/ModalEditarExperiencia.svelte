@@ -634,8 +634,8 @@
 </script>
 
 {#if mostrar}
-	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
-		<div class="bg-neutral-900 border border-green-700 rounded-lg p-4 sm:p-6 w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto {tabActual === 'general' ? 'max-w-2xl' : 'max-w-6xl'}">
+	<div class="modal-backdrop p-2 sm:p-4">
+		<div class="modal-container p-4 sm:p-6 w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto {tabActual === 'general' ? 'max-w-2xl' : 'max-w-6xl'}">
 			<form
 				method="POST"
 				action="?/actualizar"
@@ -648,31 +648,25 @@
 				</h2>
 
 				<!-- Switch de Tabs -->
-				<div class="flex gap-1 sm:gap-2 mb-6 p-1 bg-neutral-800 rounded-lg border border-green-700">
+				<div class="tab-group mb-6">
 					<button
 						type="button"
 						onclick={() => tabActual = 'general'}
-						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'general' 
-							? 'bg-green-700 text-white' 
-							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
+						class="tab-btn {tabActual === 'general' ? 'tab-btn-active' : ''}"
 					>
 						General
 					</button>
 					<button
 						type="button"
 						onclick={() => tabActual = 'detalle'}
-						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'detalle' 
-							? 'bg-green-700 text-white' 
-							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
+						class="tab-btn {tabActual === 'detalle' ? 'tab-btn-active' : ''}"
 					>
 						Detalle
 					</button>
 					<button 
 						type="button" 
 						onclick={() => tabActual = 'habitaciones'}
-						class="flex-1 px-2 py-2 rounded-md text-xs sm:text-sm font-medium transition {tabActual === 'habitaciones' 
-							? 'bg-green-700 text-white' 
-							: 'text-gray-400 hover:text-white hover:bg-neutral-700'}"
+						class="tab-btn {tabActual === 'habitaciones' ? 'tab-btn-active' : ''}"
 						>
 						Habitaciones
 					</button>
@@ -684,30 +678,28 @@
 
 						<!-- PORTADA -->
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">Portada</label>
+							<label class="block text-sm font-medium text-white/80 mb-2">Portada</label>
 
 							{#if previewPortada || portadaExistente}
 								<div class="mb-3 relative">
 									<img
 										src={previewPortada || portadaExistente}
 										alt="Portada de la experiencia"
-										class="w-full h-48 object-cover rounded-lg border border-green-700"
+										class="w-full h-48 object-cover rounded-2xl border border-white/10"
 									/>
 									{#if previewPortada}
-										<span class="absolute top-2 left-2 bg-yellow-600 text-white text-xs px-2 py-0.5 rounded">Nueva</span>
+										<span class="absolute top-2 left-2 badge-hidden text-[10px]">Nueva</span>
 									{:else}
-										<span class="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-0.5 rounded">Guardada</span>
+										<span class="absolute top-2 left-2 badge-active text-[10px]">Guardada</span>
 									{/if}
 									<div class="absolute top-2 right-2 flex gap-2">
 										<!-- Cambiar portada -->
 										<label
 											title="Cambiar portada"
-											class="bg-neutral-700 hover:bg-neutral-600 text-white rounded-full p-2 cursor-pointer transition"
+											class="bg-white/10 hover:bg-white/15 text-white rounded-full p-2 cursor-pointer transition"
 											class:opacity-50={cargando || optimizando}
 										>
-											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6-6m-6 6l-2 2v2h2l2-2-2-2z" />
-											</svg>
+											<i class="ph ph-pencil-simple w-4 h-4"></i>
 											<input
 												type="file"
 												accept="image/*"
@@ -727,25 +719,22 @@
 											}}
 											disabled={cargando}
 											title="Quitar portada"
-											class="bg-red-600 hover:bg-red-700 text-white rounded-full p-2 transition disabled:opacity-50"
+											class="btn-danger rounded-full p-2"
 										>
-											<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-											</svg>
+											<i class="ph ph-trash w-4 h-4"></i>
 										</button>
 									</div>
 								</div>
 							{:else}
 								<label
-									class="block w-full h-40 border-2 border-dashed border-neutral-700 rounded-lg
-										hover:border-green-700 cursor-pointer transition flex items-center justify-center"
+									class="drop-zone block w-full h-40 flex items-center justify-center"
 									class:opacity-50={cargando || optimizando}
 								>
-									<div class="text-center text-neutral-500">
+									<div class="text-center text-white/35">
 										{#if optimizando}
-											<div class="text-green-400">⚡ Optimizando...</div>
+											<div class="text-brand-400"><i class="ph ph-lightning inline mr-1"></i> Optimizando...</div>
 										{:else}
-											<div class="text-sm font-medium">📸 Seleccionar Portada</div>
+											<div class="text-sm font-medium"><i class="ph ph-camera inline mr-1"></i> Seleccionar Portada</div>
 											<div class="text-xs mt-1">Se optimizará automáticamente</div>
 										{/if}
 									</div>
@@ -761,35 +750,35 @@
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">Título *</label>
+							<label class="block text-sm font-medium text-white/80 mb-2">Título *</label>
 							<input
 								type="text"
 								name="titulo"
 								bind:value={experienciaSeleccionada.titulo}
 								required
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+								class="premium-input w-full px-4 py-2 text-sm"
 							/>
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">Descripción *</label>
+							<label class="block text-sm font-medium text-white/80 mb-2">Descripción *</label>
 							<textarea
 								name="descripcion"
 								bind:value={experienciaSeleccionada.descripcion}
 								required
 								rows="4"
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+								class="premium-input w-full px-4 py-2 text-sm"
 								placeholder="Describe la experiencia..."
 							></textarea>
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">Ubicación *</label>
+							<label class="block text-sm font-medium text-white/80 mb-2">Ubicación *</label>
 							<select
 								name="id_ubicacion"
 								bind:value={experienciaSeleccionada.id_ubicacion}
 								required
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+								class="premium-select w-full px-4 py-2 text-sm"
 							>
 								<option value="">Selecciona una ubicación</option>
 								{#each ubicaciones as ubicacion}
@@ -800,37 +789,37 @@
 
 						<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Fecha Inicio *</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Fecha Inicio *</label>
 								<input
 									type="date"
 									name="fecha_inicio"
 									bind:value={experienciaSeleccionada.fecha_inicio}
 									required
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								/>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Fecha Fin *</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Fecha Fin *</label>
 								<input
 									type="date"
 									name="fecha_fin"
 									bind:value={experienciaSeleccionada.fecha_fin}
 									required
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								/>
 							</div>
 						</div>
 
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">Capacidad *</label>
+							<label class="block text-sm font-medium text-white/80 mb-2">Capacidad *</label>
 							<input
 								type="number"
 								name="capacidad"
 								bind:value={experienciaSeleccionada.capacidad}
 								required
 								min="1"
-								class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+								class="premium-input w-full px-4 py-2 text-sm"
 							/>
 						</div>
 
@@ -846,9 +835,9 @@
 									type="checkbox"
 									id="activo-edit"
 									bind:checked={experienciaSeleccionada.activo}
-									class="w-4 h-4 text-green-600 rounded bg-neutral-800 border-green-700"
+									class="premium-checkbox"
 								/>
-								<label for="activo-edit" class="ml-2 text-sm text-white font-medium">Activa (Venta pública)</label>
+								<label for="activo-edit" class="ml-2 text-sm text-white/80 font-medium">Activa (Venta pública)</label>
 							</div>
 
 							<div class="flex items-center">
@@ -861,9 +850,9 @@
 									type="checkbox"
 									id="oculto-edit"
 									bind:checked={experienciaSeleccionada.oculto}
-									class="w-4 h-4 text-yellow-600 rounded bg-neutral-800 border-green-700"
+									class="premium-checkbox"
 								/>
-								<label for="oculto-edit" class="ml-2 text-sm text-white font-medium">Ocultar de la Web (Invisible para clientes)</label>
+								<label for="oculto-edit" class="ml-2 text-sm text-white/80 font-medium">Ocultar de la Web (Invisible para clientes)</label>
 							</div>
 						</div>
 					</div>
@@ -875,58 +864,58 @@
 						<!-- Columna Izquierda - Campos de texto -->
 						<div class="space-y-4">
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Descripción Larga</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Descripción Larga</label>
 								<textarea
 									name="descripcionLarga"
 									bind:value={descripcionLarga}
 									rows="8"
 									maxlength="2000"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
+									class="premium-input w-full px-4 py-2 resize-none text-sm"
 									placeholder="Descripción detallada de la experiencia..."
 								></textarea>
-								<p class="text-xs text-gray-400 mt-1">{descripcionLarga.length}/2000 caracteres</p>
+								<p class="text-xs text-white/30 mt-1">{descripcionLarga.length}/2000 caracteres</p>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Sede (Hotel)</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Sede (Hotel)</label>
 								<input
 									type="text"
 									name="sede"
 									bind:value={sede}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 									placeholder="Ej: Hotel Marriott, Centro de la ciudad"
 								/>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Link de Grupo de WhatsApp</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Link de Grupo de WhatsApp</label>
 								<input
 									type="url"
 									name="link_whatsapp"
 									bind:value={link_whatsapp}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 									placeholder="https://chat.whatsapp.com/..."
 								/>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Actividades</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Actividades</label>
 								<textarea
 									name="actividades"
 									bind:value={actividades}
 									rows="5"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
+									class="premium-input w-full px-4 py-2 resize-none text-sm"
 									placeholder="Lista de actividades incluidas (una por línea)"
 								></textarea>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">Qué Incluye</label>
+								<label class="block text-sm font-medium text-white/80 mb-2">Qué Incluye</label>
 								<textarea
 									name="queIncluye"
 									bind:value={queIncluye}
 									rows="5"
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg focus:ring-2 focus:ring-green-500 outline-none resize-none text-sm"
+									class="premium-input w-full px-4 py-2 resize-none text-sm"
 									placeholder="Lista de items incluidos (una por línea)"
 								></textarea>
 							</div>
@@ -934,38 +923,33 @@
 
 						<!-- Columna Derecha - Galería de Imágenes -->
 						<div>
-							<label class="block text-sm font-medium text-white mb-2">
+							<label class="block text-sm font-medium text-white/80 mb-2">
 								Galería de Imágenes ({totalImagenes}/15)
 								{#if optimizando}
-									<span class="ml-2 text-xs text-yellow-400 animate-pulse">⚡ Optimizando...</span>
+									<span class="ml-2 text-xs text-yellow-400 animate-pulse"><i class="ph ph-lightning inline mr-1"></i> Optimizando...</span>
 								{/if}
 							</label>
 							<div class="space-y-3">
 								<!-- Input de archivos -->
-								<label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-green-700 rounded-lg cursor-pointer bg-neutral-800 hover:bg-neutral-700 transition {totalImagenes >= 15 || optimizando ? 'opacity-50 cursor-not-allowed' : ''}">
+								<label class="drop-zone flex flex-col items-center justify-center w-full h-32 cursor-pointer {totalImagenes >= 15 || optimizando ? 'opacity-50 cursor-not-allowed' : ''}">
 									<div class="flex flex-col items-center justify-center pt-5 pb-6">
 										{#if optimizando}
 											<!-- Spinner de carga -->
-											<svg class="w-8 h-8 mb-2 text-green-400 animate-spin" fill="none" viewBox="0 0 24 24">
-												<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-												<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-											</svg>
+											<i class="ph ph-circle-notch w-8 h-8 mb-2 text-brand-400 animate-spin"></i>
 											<p class="text-sm text-yellow-400">Optimizando imágenes...</p>
 										{:else}
-											<svg class="w-8 h-8 mb-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-												<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-											</svg>
-											<p class="mb-1 text-sm text-gray-400 text-center px-4">
+											<i class="ph ph-upload-simple w-8 h-8 mb-2 text-brand-400"></i>
+											<p class="mb-1 text-sm text-white/40 text-center px-4">
 												<span class="font-semibold">Click para subir</span> o arrastra imágenes
 											</p>
-											<p class="text-xs text-gray-500">
+											<p class="text-xs text-white/30">
 												{#if totalImagenes >= 15}
 													Límite alcanzado
 												{:else}
 													Puedes agregar {15 - totalImagenes} más
 												{/if}
 											</p>
-											<p class="text-xs text-green-400 mt-1">✨ Auto-optimización activada</p>
+											<p class="text-xs text-brand-400 mt-1">✨ Auto-optimización activada</p>
 										{/if}
 									</div>
 									<input
@@ -987,20 +971,18 @@
 												<img 
 													src={urlImagen} 
 													alt="Imagen {index + 1}" 
-													class="w-full h-full object-cover rounded-lg border border-green-700"
+													class="w-full h-full object-cover rounded-2xl border border-white/10"
 												/>
-												<div class="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+												<div class="absolute top-1 left-1 badge-active text-[10px]">
 													Guardada
 												</div>
 												<button
 													type="button"
 													onclick={() => eliminarImagenExistente(index)}
 													aria-label="Eliminar imagen existente"
-													class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+													class="absolute top-1 right-1 btn-danger rounded-full p-1 opacity-0 group-hover:opacity-100"
 												>
-													<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-													</svg>
+													<i class="ph ph-trash w-4 h-4"></i>
 												</button>
 											</div>
 										{/each}
@@ -1011,30 +993,26 @@
 												<img 
 													src={preview} 
 													alt="Nueva imagen {index + 1}" 
-													class="w-full h-full object-cover rounded-lg border border-yellow-500"
+													class="w-full h-full object-cover rounded-2xl border border-amber-500/30"
 												/>
-												<div class="absolute top-1 left-1 bg-yellow-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+												<div class="absolute top-1 left-1 badge-hidden text-[10px]">
 													Nueva
 												</div>
 												<button
 													type="button"
 													onclick={() => eliminarImagenNueva(index)}
 													aria-label="Eliminar imagen nueva"
-													class="absolute top-1 right-1 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition"
+													class="absolute top-1 right-1 btn-danger rounded-full p-1 opacity-0 group-hover:opacity-100"
 												>
-													<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-														<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-													</svg>
+													<i class="ph ph-trash w-4 h-4"></i>
 												</button>
 											</div>
 										{/each}
 									</div>
 								{:else}
-									<div class="border-2 border-dashed border-green-700 rounded-lg p-8 text-center text-sm">
-										<svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-										</svg>
-										<p class="mt-2 text-gray-400">No hay imágenes seleccionadas</p>
+									<div class="empty-state p-8">
+										<i class="mx-auto ph ph-image h-12 w-12 text-white/20 text-4xl"></i>
+										<p class="mt-2 text-white/35">No hay imágenes seleccionadas</p>
 									</div>
 								{/if}
 							</div>
@@ -1045,31 +1023,30 @@
 				<!-- Tab Habitaciones -->
 				<div class:hidden={tabActual !== 'habitaciones'}>
 					<!-- SECCIÓN: HABITACIONES -->
-					<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-						<div class="flex justify-between items-center mb-4 pb-2 border-b border-green-700">
+					<div class="glass-card p-6">
+						<div class="flex justify-between items-center mb-5 pb-3 border-b border-white/[0.06]">
 							<h2 class="text-xl font-bold text-white">
-								🏠 Habitaciones
+								<i class="ph ph-bed inline mr-2"></i> Habitaciones
 							</h2>
 							<button
 								type="button"
 								onclick={agregarHabitacion}
 								disabled={cargando}
-								class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-									font-medium transition shadow-sm disabled:opacity-50 flex items-center gap-2"
+								class="btn-primary px-4 py-2 flex items-center gap-2 text-sm"
 							>
-								➕ Agregar Habitación
+								<i class="ph ph-plus"></i> Agregar Habitación
 							</button>
 						</div>
 
 						{#if habitaciones.length === 0}
-							<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg text-sm">
+							<div class="empty-state">
 								<p>No hay habitaciones agregadas</p>
 								<p class="text-xs mt-1">Las habitaciones son opcionales</p>
 							</div>
 						{:else}
 							<div class="space-y-6">
 								{#each habitaciones as habitacion, index}
-									<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4">
+									<div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
 										<!-- Header de la habitación -->
 										<div class="flex justify-between items-center mb-4">
 											<h3 class="text-base sm:text-lg font-semibold text-white">
@@ -1079,10 +1056,9 @@
 												type="button"
 												onclick={() => eliminarHabitacion(index)}
 												disabled={cargando}
-												class="px-3 py-1 bg-red-700 hover:bg-red-600 text-white rounded 
-													text-sm transition disabled:opacity-50"
+												class="btn-danger px-3 py-1.5 text-sm flex items-center gap-1.5"
 											>
-												🗑️ Eliminar
+												<i class="ph ph-trash"></i> Eliminar
 											</button>
 										</div>
 
@@ -1090,8 +1066,8 @@
 										<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
 											<!-- Nombre -->
 											<div>
-												<label class="block text-sm font-medium text-neutral-300 mb-2">
-													Nombre <span class="text-red-500">*</span>
+												<label class="block text-sm font-medium text-white/60 mb-2">
+													Nombre <span class="text-red-400">*</span>
 												</label>
 												<input
 													type="text"
@@ -1099,16 +1075,14 @@
 													disabled={cargando}
 													required
 													placeholder="Ej: Habitación Doble"
-													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-														rounded-lg text-white focus:outline-none focus:ring-2 
-														focus:ring-green-600 disabled:opacity-50 text-sm"
+													class="premium-input w-full px-3 py-2 text-sm"
 												/>
 											</div>
 
 											<!-- Precio por Persona -->
 											<div>
-												<label class="block text-sm font-medium text-neutral-300 mb-2">
-													Precio por Persona <span class="text-red-500">*</span>
+												<label class="block text-sm font-medium text-white/60 mb-2">
+													Precio por Persona <span class="text-red-400">*</span>
 												</label>
 												<input
 													type="number"
@@ -1118,16 +1092,14 @@
 													min="0.01"
 													step="0.01"
 													placeholder="0.00"
-													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-														rounded-lg text-white focus:outline-none focus:ring-2 
-														focus:ring-green-600 disabled:opacity-50 text-sm"
+													class="premium-input w-full px-3 py-2 text-sm"
 												/>
 											</div>
 
 											<!-- Precio por Cuarto -->
 											<div>
-												<label class="block text-sm font-medium text-neutral-300 mb-2">
-													Precio por Cuarto <span class="text-neutral-400 text-xs">(Opcional)</span>
+												<label class="block text-sm font-medium text-white/60 mb-2">
+													Precio por Cuarto <span class="text-white/30 text-xs">(Opcional)</span>
 												</label>
 												<input
 													type="number"
@@ -1136,16 +1108,14 @@
 													min="0"
 													step="0.01"
 													placeholder="Dejar vacío para auto-calcular"
-													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-														rounded-lg text-white focus:outline-none focus:ring-2 
-														focus:ring-green-600 disabled:opacity-50 text-sm"
+													class="premium-input w-full px-3 py-2 text-sm"
 												/>
 											</div>
 
 											<!-- Cantidad de Habitaciones -->
 											<div>
-												<label class="block text-sm font-medium text-neutral-300 mb-2">
-													Cantidad de Habitaciones <span class="text-red-500">*</span>
+												<label class="block text-sm font-medium text-white/60 mb-2">
+													Cantidad de Habitaciones <span class="text-red-400">*</span>
 												</label>
 												<input
 													type="number"
@@ -1155,19 +1125,17 @@
 													max="50"
 													required
 													placeholder="1"
-													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-														rounded-lg text-white focus:outline-none focus:ring-2 
-														focus:ring-green-600 disabled:opacity-50 text-sm"
+													class="premium-input w-full px-3 py-2 text-sm"
 												/>
-												<p class="text-xs text-neutral-400 mt-1">
+												<p class="text-xs text-white/30 mt-1">
 													Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo (máximo 50)
 												</p>
 											</div>
 
 											<!-- Capacidad -->
 											<div>
-												<label class="block text-sm font-medium text-neutral-300 mb-2">
-													Capacidad (personas) <span class="text-red-500">*</span>
+												<label class="block text-sm font-medium text-white/60 mb-2">
+													Capacidad (personas) <span class="text-red-400">*</span>
 												</label>
 												<input
 													type="number"
@@ -1176,16 +1144,14 @@
 													min="1"
 													required
 													placeholder="1"
-													class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-														rounded-lg text-white focus:outline-none focus:ring-2 
-														focus:ring-green-600 disabled:opacity-50 text-sm"
+													class="premium-input w-full px-3 py-2 text-sm"
 												/>
 											</div>
 										</div>
 
 										<!-- Descripción -->
 										<div class="mb-4">
-											<label class="block text-sm font-medium text-neutral-300 mb-2">
+											<label class="block text-sm font-medium text-white/60 mb-2">
 												Descripción
 											</label>
 											<textarea
@@ -1193,27 +1159,24 @@
 												disabled={cargando}
 												rows="3"
 												placeholder="Describe las características de la habitación..."
-												class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-													rounded-lg text-white focus:outline-none focus:ring-2 
-													focus:ring-green-600 disabled:opacity-50 resize-none text-sm"
+												class="premium-input w-full px-3 py-2 resize-none text-sm"
 											></textarea>
 										</div>
 
 										<!-- Imágenes de la habitación -->
 										<div>
-											<label class="block text-sm font-medium text-neutral-300 mb-2">
+											<label class="block text-sm font-medium text-white/60 mb-2">
 												Imágenes de la Habitación
 											</label>
 											
 											<label
-												class="inline-flex items-center px-4 py-2 bg-green-700/80 hover:bg-green-600 
-													text-white rounded-lg cursor-pointer transition font-medium text-sm"
+												class="btn-primary inline-flex items-center px-4 py-2 cursor-pointer text-sm"
 												class:opacity-50={cargando || optimizando}
 											>
 												{#if optimizando}
-													⚡ Optimizando...
+													<i class="ph ph-lightning inline mr-1"></i> Optimizando...
 												{:else}
-													📸 Agregar Imágenes
+													<i class="ph ph-camera inline mr-1"></i> Agregar Imágenes
 												{/if}
 												<input
 													type="file"
@@ -1233,9 +1196,9 @@
 															<img
 																src={img}
 																alt="Habitación {index + 1} - Imagen {imgIndex + 1}"
-																class="w-full h-full object-cover rounded border border-green-700/50"
+																class="w-full h-full object-cover rounded-2xl border border-white/10"
 															/>
-															<span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+															<span class="absolute top-2 right-2 badge-active text-[10px]">
 																Guardada
 															</span>
 															<button
@@ -1243,9 +1206,9 @@
 																onclick={() => eliminarImagenExistenteHabitacion(index, imgIndex)}
 																disabled={cargando}
 																class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-																	transition flex items-center justify-center text-white text-sm"
+																	transition-opacity duration-200 flex items-center justify-center text-white text-sm rounded-2xl"
 															>
-																🗑️
+																<i class="ph ph-trash text-lg"></i>
 															</button>
 														</div>
 													{/each}
@@ -1260,19 +1223,19 @@
 															<img
 																src={preview}
 																alt="Habitación {index + 1} - Nueva {imgIndex + 1}"
-																class="w-full h-full object-cover rounded border border-green-700/50"
+																class="w-full h-full object-cover rounded-2xl border border-amber-500/30"
 															/>
-															<span class="absolute top-2 right-2 bg-yellow-600 text-white text-[10px] px-1.5 py-0.5 rounded">
+															<span class="absolute top-2 right-2 badge-hidden text-[10px]">
 																Nueva
 															</span>
 															<button
 																type="button"
-																onclick={() => eliminarImagenHabitacion(index, imgIndex)}
+																onclick={() => eliminarImagenNueva(index, imgIndex)}
 																disabled={cargando}
 																class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-																	transition flex items-center justify-center text-white text-sm"
+																	transition-opacity duration-200 flex items-center justify-center text-white text-sm rounded-2xl"
 															>
-																🗑️
+																<i class="ph ph-trash text-lg"></i>
 															</button>
 														</div>
 													{/each}
@@ -1280,7 +1243,7 @@
 											{/if}
 
 											{#if habitacion.imagenesExistentes.length === 0 && habitacion.previewsNuevas.length === 0}
-												<p class="text-xs text-neutral-400 mt-2">
+												<p class="text-xs text-white/30 mt-2">
 													No hay imágenes para esta habitación
 												</p>
 											{/if}
@@ -1296,7 +1259,7 @@
 					<button
 						type="submit"
 						disabled={cargando}
-						class="w-full sm:flex-1 px-4 py-2.5 bg-green-700 hover:bg-green-600 text-white rounded-lg font-medium transition disabled:opacity-50 disabled:cursor-not-allowed text-sm text-center"
+						class="btn-primary w-full sm:flex-1 px-4 py-2.5 text-sm text-center"
 					>
 						{cargando ? 'Guardando...' : 'Guardar Cambios'}
 					</button>
@@ -1304,7 +1267,7 @@
 						type="button"
 						onclick={onClose}
 						disabled={cargando}
-						class="w-full sm:flex-1 px-4 py-2.5 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg font-medium transition disabled:opacity-50 text-sm text-center"
+						class="btn-secondary w-full sm:flex-1 px-4 py-2.5 text-sm text-center"
 					>
 						Cancelar
 					</button>

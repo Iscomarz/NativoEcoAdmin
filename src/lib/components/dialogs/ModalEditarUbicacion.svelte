@@ -335,21 +335,25 @@
 </script>
 
 {#if mostrarModal}
-	<div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 animate-fade-in">
-		<div class="bg-neutral-900 rounded-lg border border-green-700 w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+	<div class="modal-backdrop p-2 sm:p-4">
+		<div class="modal-container w-full max-w-6xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
 			<form method="POST" action={modoCrear ? '?/crear' : '?/actualizar'} onsubmit={manejarSubmit}>
 				<!-- Header -->
-				<div class="sticky top-0 bg-neutral-900 border-b border-green-700 px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center z-10">
+				<div class="sticky top-0 bg-[rgba(10,20,14,0.95)] backdrop-blur-xl border-b border-white/[0.06] px-4 py-3 sm:px-6 sm:py-4 flex justify-between items-center z-10">
 					<h2 class="text-xl sm:text-2xl font-bold text-white">
-						{modoCrear ? '➕ Nueva Ubicación' : '✏️ Editar Ubicación'}
+						{#if modoCrear}
+							<i class="ph ph-plus inline mr-1"></i> Nueva Ubicación
+						{:else}
+							<i class="ph ph-pencil-simple inline mr-1"></i> Editar Ubicación
+						{/if}
 					</h2>
 					<button
 						type="button"
 						onclick={onClose}
 						disabled={cargando}
-						class="text-white hover:text-red-500 text-2xl disabled:opacity-50 p-1"
+						class="text-white/40 hover:text-white text-2xl disabled:opacity-50 p-1 transition"
 					>
-						✕
+						<i class="ph ph-x"></i>
 					</button>
 				</div>
 
@@ -357,50 +361,47 @@
 				<div class="p-4 sm:p-6 space-y-6 sm:space-y-8">
 					<!-- INFORMACIÓN GENERAL -->
 					<div>
-						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-							📋 Información General
+						<h3 class="section-title">
+							<i class="ph ph-list inline mr-1"></i> Información General
 						</h3>
 
 						<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 							<div class="lg:col-span-2">
-								<label class="block text-sm font-medium text-white mb-2">
-									Nombre <span class="text-red-500">*</span>
+								<label class="block text-sm font-medium text-white/80 mb-2">
+									Nombre <span class="text-red-400">*</span>
 								</label>
 								<input
 									type="text"
 									bind:value={nombre_ubicacion}
 									required
 									disabled={cargando}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								/>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">
-									Estado <span class="text-red-500">*</span>
+								<label class="block text-sm font-medium text-white/80 mb-2">
+									Estado <span class="text-red-400">*</span>
 								</label>
 								<input
 									type="text"
 									bind:value={estado_ubicacion}
 									required
 									disabled={cargando}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								/>
 							</div>
 
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">
-									País <span class="text-red-500">*</span>
+								<label class="block text-sm font-medium text-white/80 mb-2">
+									País <span class="text-red-400">*</span>
 								</label>
 								<input
 									type="text"
 									bind:value={pais_ubicacion}
 									required
 									disabled={cargando}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								/>
 							</div>
 
@@ -411,10 +412,9 @@
 										id="activo-edit"
 										bind:checked={activo}
 										disabled={cargando}
-										class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
-											focus:ring-green-500 focus:ring-2"
+										class="premium-checkbox"
 									/>
-									<label for="activo-edit" class="text-sm font-medium text-white">
+									<label for="activo-edit" class="text-sm font-medium text-white/80">
 										Ubicación activa
 									</label>
 								</div>
@@ -425,10 +425,9 @@
 										id="oculto-edit"
 										bind:checked={oculto}
 										disabled={cargando}
-										class="w-5 h-5 text-red-600 bg-neutral-800 border-green-700 rounded 
-											focus:ring-red-500 focus:ring-2"
+										class="premium-checkbox"
 									/>
-									<label for="oculto-edit" class="text-sm font-medium text-white">
+									<label for="oculto-edit" class="text-sm font-medium text-white/80">
 										Ocultar en la web
 									</label>
 								</div>
@@ -437,16 +436,16 @@
 
 						<!-- PORTADA -->
 						<div class="mt-6">
-							<label class="block text-sm font-medium text-white mb-2">
+							<label class="block text-sm font-medium text-white/80 mb-2">
 								Portada
 							</label>
 							
 							{#if portadaExistente && !portadaNueva}
-								<div class="relative w-full h-48 rounded-lg overflow-hidden border border-green-700 group">
+								<div class="relative w-full h-48 rounded-2xl overflow-hidden border border-white/10 group">
 									<img src={portadaExistente} alt="Portada" class="w-full h-full object-cover" />
 									<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
 										<label
-											class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg cursor-pointer text-sm font-medium"
+											class="btn-primary px-4 py-2 cursor-pointer text-sm"
 										>
 											Cambiar Portada
 											<input
@@ -460,9 +459,9 @@
 									</div>
 								</div>
 							{:else if previewPortada && portadaNueva}
-								<div class="relative w-full h-48 rounded-lg overflow-hidden border border-yellow-600 group">
+								<div class="relative w-full h-48 rounded-2xl overflow-hidden border border-amber-500/30 group">
 									<img src={previewPortada} alt="Nueva portada" class="w-full h-full object-cover" />
-									<span class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded">
+									<span class="absolute top-2 right-2 badge-hidden text-[10px]">
 										Nueva
 									</span>
 									<div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
@@ -470,23 +469,22 @@
 											type="button"
 											onclick={eliminarPortadaNueva}
 											disabled={cargando}
-											class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium"
+											class="btn-danger px-4 py-2 text-sm"
 										>
-											🗑️ Eliminar
+											<i class="ph ph-trash inline mr-1"></i> Eliminar
 										</button>
 									</div>
 								</div>
 							{:else}
 								<label
-									class="block w-full h-48 border-2 border-dashed border-neutral-700 rounded-lg 
-										hover:border-green-700 cursor-pointer transition flex items-center justify-center"
+									class="drop-zone block w-full h-48 flex items-center justify-center"
 									class:opacity-50={cargando || optimizando}
 								>
-									<div class="text-center text-neutral-500 p-4">
+									<div class="text-center text-white/35 p-4">
 										{#if optimizando}
-											<div class="text-green-400">⚡ Optimizando...</div>
+											<span class="text-sm font-medium"><i class="ph ph-lightning inline mr-1"></i> Optimizando...</span>
 										{:else}
-											<div class="text-sm font-medium">📸 Seleccionar Portada</div>
+											<span class="text-sm font-medium"><i class="ph ph-camera inline mr-1"></i> Seleccionar Portada</span>
 											<div class="text-xs mt-1">Se optimizará automáticamente</div>
 										{/if}
 									</div>
@@ -504,36 +502,34 @@
 
 					<!-- DETALLE -->
 					<div>
-						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-							📝 Detalle
+						<h3 class="section-title">
+							<i class="ph ph-note inline mr-1"></i> Detalle
 						</h3>
 
 						<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 							<!-- Descripción Larga -->
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">
+								<label class="block text-sm font-medium text-white/80 mb-2">
 									Descripción Larga
 								</label>
 								<textarea
 									bind:value={descripcion_larga}
 									rows="5"
 									disabled={cargando}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								></textarea>
 							</div>
 
 							<!-- Historia -->
 							<div>
-								<label class="block text-sm font-medium text-white mb-2">
+								<label class="block text-sm font-medium text-white/80 mb-2">
 									Historia
 								</label>
 								<textarea
 									bind:value={historia}
 									rows="5"
 									disabled={cargando}
-									class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-										focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50 text-sm"
+									class="premium-input w-full px-4 py-2 text-sm"
 								></textarea>
 							</div>
 						</div>
@@ -541,20 +537,19 @@
 
 					<!-- GALERÍA -->
 					<div>
-						<h3 class="text-lg sm:text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-							🖼️ Galería
+						<h3 class="section-title">
+							<i class="ph ph-image-square inline mr-1"></i> Galería
 						</h3>
 
 						<div class="mb-4">
 							<label
-								class="inline-flex items-center px-4 py-2 bg-green-700 hover:bg-green-600 
-									text-white rounded-lg cursor-pointer transition text-sm font-medium"
+								class="btn-primary inline-flex items-center px-4 py-2.5 cursor-pointer text-sm"
 								class:opacity-50={cargando || optimizando}
 							>
 								{#if optimizando}
-									⚡ Optimizando...
+									<i class="ph ph-lightning inline mr-1"></i> Optimizando...
 								{:else}
-									📸 Agregar Imágenes
+									<i class="ph ph-camera inline mr-1"></i> Agregar Imágenes
 								{/if}
 								<input
 									type="file"
@@ -572,8 +567,8 @@
 								<!-- Existentes -->
 								{#each imagenesExistentes as imagen, index}
 									<div class="relative group h-28 sm:h-32">
-										<img src={imagen} alt="Imagen {index + 1}" class="w-full h-full object-cover rounded-lg border border-green-700" />
-										<span class="absolute top-2 right-2 bg-blue-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded">
+										<img src={imagen} alt="Imagen {index + 1}" class="w-full h-full object-cover rounded-2xl border border-white/10" />
+										<span class="absolute top-2 right-2 badge-active text-[10px]">
 											Guardada
 										</span>
 										<button
@@ -581,9 +576,9 @@
 											onclick={() => eliminarImagenExistente(index)}
 											disabled={cargando}
 											class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-												transition flex items-center justify-center text-white hover:bg-black/80 text-xs sm:text-sm font-medium"
+												transition-opacity duration-200 flex items-center justify-center text-white rounded-2xl text-xs sm:text-sm font-medium"
 										>
-											🗑️ Eliminar
+											<i class="ph ph-trash inline mr-1"></i> Eliminar
 										</button>
 									</div>
 								{/each}
@@ -591,8 +586,8 @@
 								<!-- Nuevas -->
 								{#each previewsNuevas as preview, index}
 									<div class="relative group h-28 sm:h-32">
-										<img src={preview} alt="Nueva {index + 1}" class="w-full h-full object-cover rounded-lg border border-yellow-600" />
-										<span class="absolute top-2 right-2 bg-yellow-600 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded">
+										<img src={preview} alt="Nueva {index + 1}" class="w-full h-full object-cover rounded-2xl border border-amber-500/30" />
+										<span class="absolute top-2 right-2 badge-hidden text-[10px]">
 											Nueva
 										</span>
 										<button
@@ -600,15 +595,15 @@
 											onclick={() => eliminarImagenNueva(index)}
 											disabled={cargando}
 											class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-												transition flex items-center justify-center text-white hover:bg-black/80 text-xs sm:text-sm font-medium"
+												transition-opacity duration-200 flex items-center justify-center text-white rounded-2xl text-xs sm:text-sm font-medium"
 										>
-											🗑️ Eliminar
+											<i class="ph ph-trash inline mr-1"></i> Eliminar
 										</button>
 									</div>
 								{/each}
 							</div>
 						{:else}
-							<div class="text-center py-6 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg text-sm">
+							<div class="empty-state py-6">
 								<p>No hay imágenes en la galería</p>
 							</div>
 						{/if}
@@ -616,12 +611,11 @@
 				</div>
 
 				<!-- Footer -->
-				<div class="sticky bottom-0 bg-neutral-900 border-t border-green-700 px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row gap-3 sm:gap-4 z-10">
+				<div class="sticky bottom-0 bg-[rgba(10,20,14,0.95)] backdrop-blur-xl border-t border-white/[0.06] px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row gap-3 sm:gap-4 z-10">
 					<button
 						type="submit"
 						disabled={cargando}
-						class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-							font-medium transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
+						class="btn-primary w-full sm:w-auto px-6 py-2.5 sm:py-3 flex items-center justify-center gap-2 text-sm"
 					>
 						{#if cargando}
 							<svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
@@ -630,7 +624,7 @@
 							</svg>
 							{modoCrear ? 'Creando...' : 'Guardando...'}
 						{:else}
-							{modoCrear ? '➕ Crear Ubicación' : '💾 Guardar Cambios'}
+							{#if modoCrear}<i class="ph ph-plus inline mr-1"></i> Crear Ubicación{:else}<i class="ph ph-floppy-disk inline mr-1"></i> Guardar Cambios{/if}
 						{/if}
 					</button>
 					
@@ -638,8 +632,7 @@
 						type="button"
 						onclick={onClose}
 						disabled={cargando}
-						class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
-							font-medium transition disabled:opacity-50 text-sm"
+						class="btn-secondary w-full sm:w-auto px-6 py-2.5 sm:py-3 text-sm"
 					>
 						Cancelar
 					</button>

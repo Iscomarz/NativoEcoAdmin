@@ -47,7 +47,7 @@ export async function enviarCorreoAvisoExperiencia(
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         let diasBadge = '';
         if (diffDays > 0) {
-            diasBadge = `<div style="color: #10b981; font-size: 15px; font-weight: bold; margin-top: 6px; margin-bottom: 16px; font-family: 'Outfit', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; text-align: left;">¡Faltan solo ${diffDays} días para partir!</div>`;
+            diasBadge = `<div style="color: #10b981; font-size: 15px; font-weight: bold; margin-top: 6px; margin-bottom: 16px; font-family: 'Outfit', 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; text-align: left;">¡Faltan solo ${diffDays} días para partir!</div>`;
         }
 
         // Construir HTML para las imágenes (galería de 2 fotos o 1 sola)
@@ -87,9 +87,9 @@ export async function enviarCorreoAvisoExperiencia(
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
                 <title>¡Nueva Aventura Disponible!</title>
-                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
             </head>
-            <body style="font-family: 'Outfit', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-font-smoothing: antialiased;">
+            <body style="font-family: 'Outfit', 'Poppins', 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #000000; color: #ffffff; margin: 0; padding: 0; -webkit-font-smoothing: antialiased;">
                 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #000000; min-height: 100%; padding: 40px 10px;">
                     <tr>
                         <td align="center">
@@ -97,9 +97,7 @@ export async function enviarCorreoAvisoExperiencia(
                                 <!-- LOGO -->
                                 <tr>
                                     <td align="center" style="padding-bottom: 28px;">
-                                        <div style="font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; letter-spacing: 8px; color: #ffffff; display: inline-block;">
-                                            N A T I V 🖐
-                                        </div>
+                                        <img src="https://raw.githubusercontent.com/Iscomarz/NativoEcoAdmin/main/src/lib/assets/logos/logoNativo.png" alt="Nativo Eco Tours" width="160" style="display: block; border: 0;" />
                                     </td>
                                 </tr>
                                 
@@ -114,7 +112,7 @@ export async function enviarCorreoAvisoExperiencia(
 
                                 <!-- MENSAJE BIENVENIDA -->
                                 <tr>
-                                    <td align="center" style="padding-bottom: 32px; font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: #d6d3d1; text-align: center;">
+                                    <td align="center" style="padding-bottom: 32px; font-family: 'Poppins', sans-serif; font-size: 16px; line-height: 1.6; color: #d6d3d1; text-align: center;">
                                         Hola, te avisamos que acabamos de activar una nueva experiencia en tu ubicación favorita.<br />¡Estamos muy emocionados de presentarte este nuevo viaje!
                                     </td>
                                 </tr>
@@ -132,7 +130,7 @@ export async function enviarCorreoAvisoExperiencia(
                                             <!-- EXPERIENCIA -->
                                             <tr>
                                                 <td style="padding-bottom: 18px;">
-                                                    <div style="font-family: 'Inter', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Experiencia:</div>
+                                                    <div style="font-family: 'Poppins', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Experiencia:</div>
                                                     <div style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; color: #ffffff;">${tituloExperiencia}</div>
                                                 </td>
                                             </tr>
@@ -140,7 +138,7 @@ export async function enviarCorreoAvisoExperiencia(
                                             <!-- FECHA DE SALIDA -->
                                             <tr>
                                                 <td style="padding-bottom: 18px;">
-                                                    <div style="font-family: 'Inter', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Fecha de Salida:</div>
+                                                    <div style="font-family: 'Poppins', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Fecha de Salida:</div>
                                                     <div style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; color: #ffffff;">${fechaFormateada}</div>
                                                     ${diasBadge}
                                                 </td>
@@ -149,7 +147,7 @@ export async function enviarCorreoAvisoExperiencia(
                                             <!-- UBICACION -->
                                             <tr>
                                                 <td style="padding-bottom: 8px;">
-                                                    <div style="font-family: 'Inter', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Ubicación:</div>
+                                                    <div style="font-family: 'Poppins', sans-serif; font-size: 13px; color: #78716c; margin-bottom: 4px;">Ubicación:</div>
                                                     <div style="font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; color: #ffffff;">${nombreUbicacion}</div>
                                                 </td>
                                             </tr>
@@ -162,7 +160,7 @@ export async function enviarCorreoAvisoExperiencia(
 
                                 <!-- LLAMADO A LA ACCION -->
                                 <tr>
-                                    <td align="center" style="padding-top: 36px; padding-bottom: 24px; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.5; color: #a8a29e; text-align: center;">
+                                    <td align="center" style="padding-top: 36px; padding-bottom: 24px; font-family: 'Poppins', sans-serif; font-size: 14px; line-height: 1.5; color: #a8a29e; text-align: center;">
                                         Únete a esta aventura reservando tu lugar antes de que se agoten los cupos:
                                     </td>
                                 </tr>

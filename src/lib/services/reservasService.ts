@@ -17,9 +17,49 @@ export interface mreserva {
     cantidad_grupo?: number;
     numero_cliente?: number;
     precio_unitario?: number;
+    susuario?: { nombre: string; correo: string } | null;
 }
 
 const TABLA_RESERVAS = "mreserva";
+
+/**
+ * Helper para vincular nombres y correos de usuarios registrados
+ */
+async function vincularNombresUsuarios(reservas: any[], supabaseClient = supabase) {
+    if (!reservas || reservas.length === 0) return reservas;
+
+    // Extraer IDs únicos de usuario
+    const idsUsuarios = [...new Set(reservas.map(r => r.usuario_id).filter(Boolean))];
+    
+    if (idsUsuarios.length === 0) return reservas;
+
+    try {
+        // Buscar nombres y correos en la tabla susuario
+        const { data: usuarios, error } = await supabaseClient
+            .from('susuario')
+            .select('idAuth, nombre, correo')
+            .in('idAuth', idsUsuarios);
+
+        if (error) {
+            console.error('Error al vincular datos de usuarios:', error);
+            return reservas;
+        }
+
+        // Crear mapa de idAuth -> { nombre, correo }
+        const mapaUsuarios = Object.fromEntries(usuarios.map(u => [u.idAuth, { nombre: u.nombre, correo: u.correo }]));
+
+        // Asignar los datos al objeto susuario simulado
+        return reservas.map(r => ({
+            ...r,
+            susuario: r.usuario_id && mapaUsuarios[r.usuario_id] 
+                ? mapaUsuarios[r.usuario_id] 
+                : null
+        }));
+    } catch (err) {
+        console.error('Error inesperado vinculando usuarios:', err);
+        return reservas;
+    }
+}
 
 /**
  * Obtener reservas por experiencia ID
@@ -34,7 +74,9 @@ export async function obtenerReservasByExperiencia(idExperiencia: number, supaba
             .order("fecha_reserva", { ascending: true });
 
         if (error) throw error;
-        return data || [];
+        
+        // Vincular nombres manualmente
+        return await vincularNombresUsuarios(data || [], supabaseClient);
     } catch (error) {
         console.error("Error obteniendo reservas:", error);
         throw error;
@@ -52,7 +94,9 @@ export async function obtenerTodasLasReservas(supabaseClient = supabase): Promis
             .order("fecha_reserva", { ascending: false });
 
         if (error) throw error;
-        return data || [];
+
+        // Vincular nombres manualmente
+        return await vincularNombresUsuarios(data || [], supabaseClient);
     } catch (error) {
         console.error("Error obteniendo todas las reservas:", error);
         throw error;
@@ -70,7 +114,9 @@ export async function obtenerReservasConExperiencia(supabaseClient = supabase): 
             .order("fecha_reserva", { ascending: false });
 
         if (error) throw error;
-        return data || [];
+
+        // Vincular nombres manualmente
+        return await vincularNombresUsuarios(data || [], supabaseClient);
     } catch (error) {
         console.error("Error obteniendo reservas con experiencia:", error);
         throw error;

@@ -3,6 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { sidebarOpen } from '$lib/stores/sidebar';
+	import logoNativo from '$lib/assets/logos/logoNativo.png';
 
 	const user = $derived($auth);
 
@@ -13,37 +14,38 @@
 	}
 </script>
 
-<header class="bg-neutral-900 border-b border-green-700 shadow-md h-16 fixed top-0 left-0 right-0 z-30">
+<header class="glass-header h-16 fixed top-0 left-0 right-0 z-30">
 	<div class="h-full px-4 sm:px-6 flex items-center justify-between">
 		<div class="flex items-center space-x-3 sm:space-x-4">
 			{#if user}
 				<button
 					onclick={() => sidebarOpen.toggle()}
-					class="lg:hidden p-2 text-white hover:bg-neutral-800 rounded-lg focus:outline-none transition-colors"
+					class="lg:hidden p-2 text-white/70 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-200"
 					aria-label="Menú de navegación"
 				>
-					<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-					</svg>
+					<i class="ph ph-list text-2xl"></i>
 				</button>
 			{/if}
-			<h1 class="text-lg sm:text-xl font-bold text-white truncate">Nativo Tours Admin</h1>
+			<div class="flex items-center space-x-2">
+				<img src={logoNativo} alt="Nativo Tours" class="h-8 w-auto object-contain" />
+				<span class="text-xs uppercase tracking-widest text-white/40 font-bold self-center pt-1">Admin</span>
+			</div>
 		</div>
 
 		<div class="flex items-center space-x-3 sm:space-x-4">
 			{#if user}
 				<div class="flex items-center space-x-2 sm:space-x-3">
 					<div class="text-right hidden sm:block">
-						<p class="text-sm font-medium text-white">{user.name}</p>
-						<p class="text-xs text-green-400">{user.email}</p>
+						<p class="text-sm font-medium text-white/90">{user.name}</p>
+						<p class="text-xs text-brand-400">{user.email}</p>
 					</div>
-					<div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-green-700 flex items-center justify-center text-white font-semibold">
+					<div class="avatar w-8 h-8 sm:w-10 sm:h-10 text-sm">
 						{user.name.charAt(0).toUpperCase()}
 					</div>
 				</div>
 				<button
 					onclick={handleLogout}
-					class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-red-700 hover:bg-red-600 text-white rounded-lg text-xs sm:text-sm font-medium transition flex items-center gap-1.5"
+					class="btn-danger px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm flex items-center gap-1.5"
 					title="Cerrar Sesión"
 				>
 					<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,4 +57,3 @@
 		</div>
 	</div>
 </header>
-

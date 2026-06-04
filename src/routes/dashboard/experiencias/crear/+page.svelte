@@ -554,8 +554,8 @@
 
 <div class="space-y-6">
 	<div>
-		<h1 class="text-2xl sm:text-3xl font-bold text-white">Crear Experiencia</h1>
-		<p class="text-green-400 mt-1 text-sm sm:text-base">Agrega una nueva experiencia al catálogo</p>
+		<h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Crear Experiencia</h1>
+		<p class="text-brand-400/70 mt-1 text-sm sm:text-base">Agrega una nueva experiencia al catálogo</p>
 	</div>
 
 	<form 
@@ -565,31 +565,30 @@
 		class="space-y-8"
 	>
 		<!-- SECCIÓN: INFORMACIÓN GENERAL -->
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-				📋 Información General
+		<div class="glass-card p-6">
+			<h2 class="section-title">
+				<i class="ph ph-clipboard-text inline mr-2"></i> Información General
 			</h2>
 
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<!-- Título -->
 				<div class="lg:col-span-2">
-					<label class="block text-sm font-medium text-white mb-2">
-						Título <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Título <span class="text-red-400">*</span>
 					</label>
 					<input
 						type="text"
 						bind:value={titulo}
 						required
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-input w-full px-4 py-2.5"
 						placeholder="Ej: Tour en Cenotes Mayas"
 					/>
 				</div>
 
 				<!-- PORTADA -->
 				<div class="lg:col-span-2">
-					<label class="block text-sm font-medium text-white mb-2">
+					<label class="block text-sm font-medium text-white/80 mb-2">
 						Portada
 					</label>
 					
@@ -598,7 +597,7 @@
 							<img
 								src={previewPortada}
 								alt="Preview Portada"
-								class="w-full h-48 object-cover rounded-lg border border-green-700"
+								class="w-full h-48 object-cover rounded-2xl border border-white/10"
 							/>
 							<button
 								type="button"
@@ -608,25 +607,21 @@
 									toast.success('Portada eliminada');
 								}}
 								disabled={cargando}
-								class="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full p-2 
-									disabled:opacity-50 transition"
+								class="absolute top-2 right-2 btn-danger rounded-full p-2"
 							>
-								<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-								</svg>
+								<i class="ph ph-trash w-5 h-5"></i>
 							</button>
 						</div>
 					{:else}
 					<label
-						class="block w-full h-48 border-2 border-dashed border-neutral-700 rounded-lg 
-							hover:border-green-700 cursor-pointer transition flex items-center justify-center"
+						class="drop-zone block w-full h-48 flex items-center justify-center"
 						class:opacity-50={cargando || optimizando}
 					>
-						<div class="text-center text-neutral-500">
+						<div class="text-center text-white/35">
 							{#if optimizando}
-								<div class="text-green-400">⚡ Optimizando...</div>
+								<div class="text-brand-400"><i class="ph ph-lightning inline mr-1"></i> Optimizando...</div>
 							{:else}
-								<div>📸 Seleccionar Portada</div>
+								<div><i class="ph ph-camera inline mr-1"></i> Seleccionar Portada</div>
 								<div class="text-xs mt-1">Se optimizará automáticamente</div>
 							{/if}
 						</div>
@@ -643,15 +638,14 @@
 
 				<!-- Ubicación -->
 				<div>
-					<label class="block text-sm font-medium text-white mb-2">
-						Ubicación <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Ubicación <span class="text-red-400">*</span>
 					</label>
 					<select
 						bind:value={id_ubicacion}
 						required
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-select w-full px-4 py-2.5"
 					>
 						<option value={null}>Selecciona una ubicación...</option>
 						{#each ubicaciones as ubicacion}
@@ -662,8 +656,8 @@
 
 				<!-- Capacidad -->
 				<div>
-					<label class="block text-sm font-medium text-white mb-2">
-						Capacidad <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Capacidad <span class="text-red-400">*</span>
 					</label>
 					<input
 						type="number"
@@ -671,54 +665,50 @@
 						required
 						min="1"
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-input w-full px-4 py-2.5"
 						placeholder="Número de personas"
 					/>
 				</div>
 
 				<!-- Fecha Inicio -->
 				<div>
-					<label class="block text-sm font-medium text-white mb-2">
-						Fecha de Inicio <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Fecha de Inicio <span class="text-red-400">*</span>
 					</label>
 					<input
 						type="date"
 						bind:value={fecha_inicio}
 						required
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-input w-full px-4 py-2.5"
 					/>
 				</div>
 
 				<!-- Fecha Fin -->
 				<div>
-					<label class="block text-sm font-medium text-white mb-2">
-						Fecha de Fin <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Fecha de Fin <span class="text-red-400">*</span>
 					</label>
 					<input
 						type="date"
 						bind:value={fecha_fin}
 						required
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-input w-full px-4 py-2.5"
 					/>
 				</div>
 
 				<!-- Descripción Corta -->
 				<div class="lg:col-span-2">
-					<label class="block text-sm font-medium text-white mb-2">
-						Descripción Corta <span class="text-red-500">*</span>
+					<label class="block text-sm font-medium text-white/80 mb-2">
+						Descripción Corta <span class="text-red-400">*</span>
 					</label>
 					<textarea
 						bind:value={descripcion}
 						required
 						rows="3"
 						disabled={cargando}
-						class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-							focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+						class="premium-input w-full px-4 py-2.5"
 						placeholder="Descripción breve para mostrar en listados..."
 					></textarea>
 				</div>
@@ -731,10 +721,9 @@
 							id="activo"
 							bind:checked={activo}
 							disabled={cargando}
-							class="w-5 h-5 text-green-600 bg-neutral-800 border-green-700 rounded 
-								focus:ring-green-500 focus:ring-2"
+							class="premium-checkbox"
 						/>
-						<label for="activo" class="text-sm font-medium text-white">
+						<label for="activo" class="text-sm font-medium text-white/80">
 							Experiencia activa (Venta pública)
 						</label>
 					</div>
@@ -745,10 +734,9 @@
 							id="oculto"
 							bind:checked={oculto}
 							disabled={cargando}
-							class="w-5 h-5 text-yellow-600 bg-neutral-800 border-green-700 rounded 
-								focus:ring-yellow-500 focus:ring-2"
+							class="premium-checkbox"
 						/>
-						<label for="oculto" class="text-sm font-medium text-white">
+						<label for="oculto" class="text-sm font-medium text-white/80">
 							Ocultar de la Web (Invisible para clientes)
 						</label>
 					</div>
@@ -757,9 +745,9 @@
 		</div>
 
 		<!-- SECCIÓN: DETALLE DE LA EXPERIENCIA -->
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-				📝 Detalle de la Experiencia
+		<div class="glass-card p-6">
+			<h2 class="section-title">
+				<i class="ph ph-note-pencil inline mr-2"></i> Detalle de la Experiencia
 			</h2>
 
 			<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -775,11 +763,10 @@
 							rows="6"
 							maxlength="2000"
 							disabled={cargando}
-							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							class="premium-input w-full px-4 py-2.5"
 							placeholder="Descripción detallada de la experiencia..."
 						></textarea>
-						<p class="text-xs text-neutral-400 mt-1">
+						<p class="text-xs text-white/30 mt-1">
 							{caracteresRestantes} caracteres restantes
 						</p>
 					</div>
@@ -793,23 +780,21 @@
 							type="text"
 							bind:value={sede}
 							disabled={cargando}
-							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							class="premium-input w-full px-4 py-2.5"
 							placeholder="Ej: Hotel Xcaret"
 						/>
 					</div>
 
 					<!-- Link WhatsApp -->
 					<div>
-						<label class="block text-sm font-medium text-white mb-2">
+						<label class="block text-sm font-medium text-white/80 mb-2">
 							Link Grupo WhatsApp
 						</label>
 						<input
 							type="url"
 							bind:value={link_whatsapp}
 							disabled={cargando}
-							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							class="premium-input w-full px-4 py-2.5"
 							placeholder="https://chat.whatsapp.com/..."
 						/>
 					</div>
@@ -819,30 +804,28 @@
 				<div class="space-y-6">
 					<!-- Actividades -->
 					<div>
-						<label class="block text-sm font-medium text-white mb-2">
+						<label class="block text-sm font-medium text-white/80 mb-2">
 							Actividades
 						</label>
 						<textarea
 							bind:value={actividades}
 							rows="6"
 							disabled={cargando}
-							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							class="premium-input w-full px-4 py-2.5"
 							placeholder="Lista de actividades incluidas..."
 						></textarea>
 					</div>
 
 					<!-- Qué Incluye -->
 					<div>
-						<label class="block text-sm font-medium text-white mb-2">
+						<label class="block text-sm font-medium text-white/80 mb-2">
 							¿Qué Incluye?
 						</label>
 						<textarea
 							bind:value={queIncluye}
 							rows="6"
 							disabled={cargando}
-							class="w-full px-4 py-2 bg-neutral-800 border border-green-700 text-white rounded-lg 
-								focus:ring-2 focus:ring-green-500 outline-none disabled:opacity-50"
+							class="premium-input w-full px-4 py-2.5"
 							placeholder="Servicios y beneficios incluidos..."
 						></textarea>
 					</div>
@@ -851,26 +834,22 @@
 		</div>
 
 		<!-- SECCIÓN: GALERÍA DE IMÁGENES -->
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<h2 class="text-xl font-bold text-white mb-4 pb-2 border-b border-green-700">
-				🖼️ Galería de Imágenes
+		<div class="glass-card p-6">
+			<h2 class="section-title">
+				<i class="ph ph-image-square inline mr-2"></i> Galería de Imágenes
 			</h2>
 
 			<!-- Botón para agregar imágenes -->
 			<div class="mb-4">
 				<label
-					class="inline-flex items-center px-4 py-2 bg-green-700 hover:bg-green-600 
-						text-white rounded-lg cursor-pointer transition font-medium disabled:opacity-50"
+					class="btn-primary inline-flex items-center px-4 py-2.5 cursor-pointer"
 					class:opacity-50={cargando || optimizando}
 				>
 					{#if optimizando}
-						<svg class="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
-							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-						</svg>
+						<i class="ph ph-circle-notch animate-spin h-5 w-5 mr-2"></i>
 						⚡ Optimizando...
 					{:else}
-						📸 Agregar Imágenes
+						<i class="ph ph-camera inline mr-2"></i> Agregar Imágenes
 					{/if}
 					<input
 						type="file"
@@ -881,7 +860,7 @@
 						class="hidden"
 					/>
 				</label>
-				<p class="text-xs text-neutral-400 mt-2">
+				<p class="text-xs text-white/30 mt-2">
 					Las imágenes se optimizarán automáticamente antes de subir
 				</p>
 			</div>
@@ -894,9 +873,9 @@
 							<img
 								src={preview}
 								alt="Preview {index + 1}"
-								class="w-full h-32 object-cover rounded-lg border border-green-700"
+								class="w-full h-32 object-cover rounded-2xl border border-white/10"
 							/>
-							<span class="absolute top-2 right-2 bg-yellow-600 text-white text-xs px-2 py-1 rounded">
+							<span class="absolute top-2 right-2 badge-hidden text-[10px]">
 								Nueva
 							</span>
 							<button
@@ -904,15 +883,15 @@
 								onclick={() => eliminarImagenNueva(index)}
 								disabled={cargando}
 								class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
-									transition flex items-center justify-center text-white hover:bg-black/80"
+									transition-opacity duration-200 flex items-center justify-center text-white rounded-2xl"
 							>
-								🗑️ Eliminar
+								<i class="ph ph-trash inline mr-1"></i> Eliminar
 							</button>
 						</div>
 					{/each}
 				</div>
 			{:else}
-				<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
+				<div class="empty-state">
 					<p>No hay imágenes agregadas</p>
 					<p class="text-sm mt-1">Agrega imágenes para la galería de la experiencia</p>
 				</div>
@@ -920,31 +899,30 @@
 		</div>
 
 		<!-- SECCIÓN: HABITACIONES -->
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-6">
-			<div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-4 pb-2 border-b border-green-700">
+		<div class="glass-card p-6">
+			<div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 mb-5 pb-3 border-b border-white/[0.06]">
 				<h2 class="text-lg sm:text-xl font-bold text-white">
-					🏠 Habitaciones
+					<i class="ph ph-bed inline mr-2"></i> Habitaciones
 				</h2>
 				<button
 					type="button"
 					onclick={agregarHabitacion}
 					disabled={cargando}
-					class="w-full sm:w-auto px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-						font-medium transition shadow-sm disabled:opacity-50 flex items-center justify-center gap-2 text-sm"
+					class="btn-primary w-full sm:w-auto px-4 py-2 flex items-center justify-center gap-2 text-sm"
 				>
-					➕ Agregar Habitación
+					<i class="ph ph-plus"></i> Agregar Habitación
 				</button>
 			</div>
 
 			{#if habitaciones.length === 0}
-				<div class="text-center py-8 text-neutral-500 border-2 border-dashed border-neutral-700 rounded-lg">
+				<div class="empty-state">
 					<p>No hay habitaciones agregadas</p>
 					<p class="text-sm mt-1">Las habitaciones son opcionales</p>
 				</div>
 			{:else}
 				<div class="space-y-6">
 					{#each habitaciones as habitacion, index}
-						<div class="bg-neutral-800 border border-green-700/50 rounded-lg p-4">
+						<div class="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5">
 							<!-- Header de la habitación -->
 							<div class="flex justify-between items-center mb-4">
 								<h3 class="text-lg font-semibold text-white">
@@ -954,10 +932,9 @@
 									type="button"
 									onclick={() => eliminarHabitacion(index)}
 									disabled={cargando}
-									class="px-3 py-1 bg-red-700 hover:bg-red-600 text-white rounded 
-										text-sm transition disabled:opacity-50"
+									class="btn-danger px-3 py-1.5 text-sm flex items-center gap-1.5"
 								>
-									🗑️ Eliminar
+									<i class="ph ph-trash"></i> Eliminar
 								</button>
 							</div>
 
@@ -965,8 +942,8 @@
 							<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
 								<!-- Nombre -->
 								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Nombre <span class="text-red-500">*</span>
+									<label class="block text-sm font-medium text-white/60 mb-2">
+										Nombre <span class="text-red-400">*</span>
 									</label>
 									<input
 										type="text"
@@ -974,16 +951,14 @@
 										disabled={cargando}
 										required
 										placeholder="Ej: Habitación Doble"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50 text-sm"
+										class="premium-input w-full px-3 py-2 text-sm"
 									/>
 								</div>
 
 								<!-- Precio por Persona -->
 								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Precio por Persona <span class="text-red-500">*</span>
+									<label class="block text-sm font-medium text-white/60 mb-2">
+										Precio por Persona <span class="text-red-400">*</span>
 									</label>
 									<input
 										type="number"
@@ -993,16 +968,14 @@
 										min="0.01"
 										step="0.01"
 										placeholder="0.00"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
+										class="premium-input w-full px-3 py-2 text-sm"
 									/>
 								</div>
 
 								<!-- Precio por Cuarto -->
 								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Precio por Cuarto <span class="text-neutral-400 text-xs">(Opcional)</span>
+									<label class="block text-sm font-medium text-white/60 mb-2">
+										Precio por Cuarto <span class="text-white/30 text-xs">(Opcional)</span>
 									</label>
 									<input
 										type="number"
@@ -1011,16 +984,14 @@
 										min="0"
 										step="0.01"
 										placeholder="Dejar vacío para auto-calcular"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50"
+										class="premium-input w-full px-3 py-2 text-sm"
 									/>
 								</div>
 
 								<!-- Cantidad de Habitaciones -->
 								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Cantidad de Habitaciones <span class="text-red-500">*</span>
+									<label class="block text-sm font-medium text-white/60 mb-2">
+										Cantidad de Habitaciones <span class="text-red-400">*</span>
 									</label>
 									<input
 										type="number"
@@ -1030,19 +1001,17 @@
 										min="1"
 										max="50"
 										placeholder="1"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50 text-sm"
+										class="premium-input w-full px-3 py-2 text-sm"
 									/>
-									<p class="text-xs text-neutral-400 mt-1">
+									<p class="text-xs text-white/30 mt-1">
 										Se crearán {habitacion.cantidad_habitacion} habitacion(es) de este tipo (máximo 50)
 									</p>
 								</div>
 
 								<!-- Capacidad -->
 								<div>
-									<label class="block text-sm font-medium text-neutral-300 mb-2">
-										Capacidad (personas) <span class="text-red-500">*</span>
+									<label class="block text-sm font-medium text-white/60 mb-2">
+										Capacidad (personas) <span class="text-red-400">*</span>
 									</label>
 									<input
 										type="number"
@@ -1051,16 +1020,14 @@
 										required
 										min="1"
 										placeholder="1"
-										class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-											rounded-lg text-white focus:outline-none focus:ring-2 
-											focus:ring-green-600 disabled:opacity-50 text-sm"
+										class="premium-input w-full px-3 py-2 text-sm"
 									/>
 								</div>
 							</div>
 
 							<!-- Descripción -->
 							<div class="mb-4">
-								<label class="block text-sm font-medium text-neutral-300 mb-2">
+								<label class="block text-sm font-medium text-white/60 mb-2">
 									Descripción
 								</label>
 								<textarea
@@ -1068,9 +1035,7 @@
 									disabled={cargando}
 									rows="3"
 									placeholder="Describe las características de la habitación..."
-									class="w-full px-3 py-2 bg-neutral-700 border border-neutral-600 
-										rounded-lg text-white focus:outline-none focus:ring-2 
-										focus:ring-green-600 disabled:opacity-50 resize-none"
+									class="premium-input w-full px-3 py-2 resize-none"
 								></textarea>
 							</div>
 
@@ -1086,9 +1051,9 @@
 									class:opacity-50={cargando || optimizando}
 								>
 									{#if optimizando}
-										⚡ Optimizando...
+										<i class="ph ph-lightning inline mr-1"></i> Optimizando...
 									{:else}
-										📸 Agregar Imágenes
+										<i class="ph ph-camera inline mr-1"></i> Agregar Imágenes
 									{/if}
 									<input
 										type="file"
@@ -1117,7 +1082,7 @@
 													class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 
 														transition flex items-center justify-center text-white text-sm"
 												>
-													🗑️
+													<i class="ph ph-trash text-lg"></i>
 												</button>
 											</div>
 										{/each}
@@ -1139,25 +1104,21 @@
 			<button
 				type="submit"
 				disabled={cargando}
-				class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-green-700 hover:bg-green-600 text-white rounded-lg 
-					font-medium transition shadow-md disabled:opacity-50 disabled:cursor-not-allowed
+				class="btn-primary w-full sm:w-auto px-6 py-2.5 sm:py-3
 					flex items-center justify-center gap-2 text-sm sm:text-base"
 			>
 				{#if cargando}
-					<svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-						<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-					</svg>
+					<i class="ph ph-circle-notch animate-spin h-5 w-5"></i>
 					Creando...
 				{:else}
-					💾 Crear Experiencia
+					<i class="ph ph-floppy-disk"></i> Crear Experiencia
 				{/if}
 			</button>
 			
 			<a
 				href="/dashboard/experiencias/modificar"
-				class="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-neutral-700 hover:bg-neutral-600 text-white rounded-lg 
-					font-medium transition text-center text-sm sm:text-base"
+				class="btn-secondary w-full sm:w-auto px-6 py-2.5 sm:py-3
+					text-center text-sm sm:text-base"
 			>
 				Cancelar
 			</a>

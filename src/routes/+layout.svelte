@@ -57,11 +57,11 @@
 	<Toaster position="top-right" theme="dark" />
 {:else if user}
 	<!-- Layout para páginas autenticadas -->
-	<div class="min-h-screen bg-neutral-950">
+	<div class="min-h-screen bg-body">
 		<Header />
 		<Sidebar />
-		<main class="lg:ml-64 mt-16 p-4 sm:p-6">
-			<div class="max-w-7xl mx-auto">
+		<main class="lg:ml-64 mt-16 p-4 sm:p-6 lg:p-8">
+			<div class="max-w-7xl mx-auto animate-fade-in">
 				{@render children()}
 			</div>
 		</main>
@@ -69,11 +69,10 @@
 	<Toaster position="top-right" theme="dark" />
 {:else}
 	<!-- Loading o redirect -->
-	<div class="min-h-screen flex items-center justify-center bg-black">
+	<div class="min-h-screen flex items-center justify-center bg-body">
 		<div class="text-center">
-			<div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-green-500"></div>
-			<p class="mt-4 text-white">Cargando...</p>
+			<div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-brand-500"></div>
+			<p class="mt-4 text-white/60">Cargando...</p>
 		</div>
 	</div>
 {/if}
-

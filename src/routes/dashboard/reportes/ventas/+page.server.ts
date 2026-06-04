@@ -6,6 +6,7 @@ export const prerender = false;
 export const load: PageServerLoad = async () => {
     try {
         const reservas = await obtenerReservasConExperiencia();
+        console.log(reservas);
         return {
             reservas: reservas || []
         };

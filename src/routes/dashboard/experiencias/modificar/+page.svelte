@@ -174,69 +174,69 @@
 
 <div class="space-y-6">
 	<div>
-		<h1 class="text-2xl sm:text-3xl font-bold text-white">Modificar Experiencia</h1>
-		<p class="text-green-400 mt-1 text-sm sm:text-base">Selecciona una experiencia para editarla</p>
+		<h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Modificar Experiencia</h1>
+		<p class="text-brand-400/70 mt-1 text-sm sm:text-base">Selecciona una experiencia para editarla</p>
 	</div>
 
-	<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md overflow-hidden">
+	<div class="glass-card overflow-hidden">
 		<div class="overflow-x-auto">
-			<table class="w-full min-w-[850px] sm:min-w-0">
-				<thead class="bg-neutral-800 border-b border-green-700">
+			<table class="premium-table min-w-[850px] sm:min-w-0">
+				<thead>
 					<tr>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Nombre</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Ubicación</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Capacidad</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Status</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Acción</th>
+						<th>Nombre</th>
+						<th>Ubicación</th>
+						<th>Capacidad</th>
+						<th>Status</th>
+						<th>Acción</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-green-900">
+				<tbody>
 					{#each experiencias as exp}
-						<tr class="hover:bg-neutral-800">
-							<td class="px-6 py-4 text-sm font-medium text-white">{exp.titulo}</td>
-							<td class="px-6 py-4 text-sm text-gray-300">{exp.cubicacion?.nombre_ubicacion || 'Sin ubicación'}</td>
-							<td class="px-6 py-4 text-sm text-white">{exp.capacidad}</td>
-							<td class="px-6 py-4">
-								<div class="flex flex-col gap-1">
-									<span class="px-3 py-1 text-xs font-semibold rounded-full w-fit {exp.activo ? 'bg-green-800/30 text-green-400 border border-green-700' : 'bg-red-800/30 text-red-400 border border-red-700'}">
+						<tr>
+							<td class="font-medium text-white">{exp.titulo}</td>
+							<td>{exp.cubicacion?.nombre_ubicacion || 'Sin ubicación'}</td>
+							<td class="text-white">{exp.capacidad}</td>
+							<td>
+								<div class="flex flex-col gap-1.5">
+									<span class="{exp.activo ? 'badge-active' : 'badge-inactive'} w-fit">
 										{exp.activo ? 'Activa' : 'Inactiva'}
 									</span>
 									{#if exp.oculto}
-										<span class="px-3 py-1 text-xs font-semibold rounded-full w-fit bg-yellow-800/30 text-yellow-400 border border-yellow-700">
+										<span class="badge-hidden w-fit">
 											Oculta
 										</span>
 									{/if}
 								</div>
 							</td>
-							<td class="px-6 py-4">
+							<td>
 								<div class="flex flex-wrap gap-1.5">
 									<button
 										onclick={() => seleccionarExperiencia(exp,"editar")}
-										class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-green-700 hover:bg-green-600 text-white rounded-lg transition disabled:opacity-50 text-xs sm:text-sm font-medium"
+										class="btn-primary px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm flex items-center gap-1.5"
 										disabled={cargando}
 									>
-										Editar
+										<i class="ph ph-pencil-simple"></i> Editar
 									</button>
 									<button
 										onclick={() => seleccionarExperiencia(exp,"dashboard")}
-										class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition disabled:opacity-50 text-xs sm:text-sm font-medium"
+										class="btn-info px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm flex items-center gap-1.5"
 										disabled={cargando}
 									>
-										Dashboard
+										<i class="ph ph-presentation-chart"></i> Dashboard
 									</button>
 									<button
 										onclick={() => seleccionarExperiencia(exp, 'reservas')}
-										class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg transition disabled:opacity-50 text-xs sm:text-sm font-medium"
+										class="btn-purple px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm flex items-center gap-1.5"
 										disabled={cargando}
 									>
-										Reservas
+										<i class="ph ph-list-bullets"></i> Reservas
 									</button>
 									<button
 										onclick={() => eliminarExperiencia(exp.id!, exp.titulo)}
-										class="px-2.5 py-1.5 sm:px-4 sm:py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition disabled:opacity-50 text-xs sm:text-sm font-medium"
+										class="btn-danger px-2.5 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm flex items-center gap-1.5"
 										disabled={cargando}
 									>
-										Eliminar
+										<i class="ph ph-trash"></i> Eliminar
 									</button>
 								</div>
 							</td>

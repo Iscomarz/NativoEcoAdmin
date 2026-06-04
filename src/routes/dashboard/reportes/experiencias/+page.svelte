@@ -39,57 +39,57 @@
 
 <div class="space-y-6">
 	<div>
-		<h1 class="text-2xl sm:text-3xl font-bold text-white">Reporte de Experiencias</h1>
-		<p class="text-green-400 mt-1 text-sm sm:text-base">Estadísticas de las experiencias disponibles</p>
+		<h1 class="text-2xl sm:text-3xl font-bold text-white tracking-tight">Reporte de Experiencias</h1>
+		<p class="text-brand-400/70 mt-1 text-sm sm:text-base">Estadísticas de las experiencias disponibles</p>
 	</div>
 
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-4 sm:p-6">
-			<p class="text-xs sm:text-sm text-green-400">Total Experiencias</p>
+	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
+		<div class="stat-card">
+			<p class="text-xs sm:text-sm text-white/50 font-medium">Total Experiencias</p>
 			<p class="text-2xl sm:text-3xl font-bold text-white mt-2">{totalExperiencias}</p>
 		</div>
 		
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-4 sm:p-6">
-			<p class="text-xs sm:text-sm text-green-400">Total Reservas</p>
-			<p class="text-2xl sm:text-3xl font-bold text-green-500 mt-2">{totalReservas}</p>
+		<div class="stat-card">
+			<p class="text-xs sm:text-sm text-white/50 font-medium">Total Reservas</p>
+			<p class="text-2xl sm:text-3xl font-bold text-brand-400 mt-2">{totalReservas}</p>
 		</div>
 		
-		<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-4 sm:p-6 col-span-1 sm:col-span-2 md:col-span-1">
-			<p class="text-xs sm:text-sm text-green-400">Ingresos Totales</p>
-			<p class="text-2xl sm:text-3xl font-bold text-yellow-500 mt-2">${totalIngresos.toLocaleString()} MXN</p>
+		<div class="stat-card col-span-1 sm:col-span-2 md:col-span-1">
+			<p class="text-xs sm:text-sm text-white/50 font-medium">Ingresos Totales</p>
+			<p class="text-2xl sm:text-3xl font-bold text-brand-300 mt-2">${totalIngresos.toLocaleString()} MXN</p>
 		</div>
 	</div>
 
-	<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md overflow-hidden">
-		<div class="px-4 py-3 sm:px-6 sm:py-4 bg-neutral-800 border-b border-green-700">
+	<div class="glass-card overflow-hidden">
+		<div class="px-5 py-4 sm:px-6 sm:py-5 border-b border-white/[0.06]">
 			<h2 class="text-base sm:text-lg font-semibold text-white">Detalles por Experiencia</h2>
 		</div>
 		
 		<div class="overflow-x-auto">
-			<table class="w-full min-w-[550px] sm:min-w-0">
-				<thead class="bg-neutral-800 border-b border-green-700">
+			<table class="premium-table min-w-[550px] sm:min-w-0">
+				<thead>
 					<tr>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Experiencia</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Reservas</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Ingresos</th>
-						<th class="px-6 py-3 text-left text-xs font-medium text-green-400 uppercase">Status</th>
+						<th>Experiencia</th>
+						<th>Reservas</th>
+						<th>Ingresos</th>
+						<th>Status</th>
 					</tr>
 				</thead>
-				<tbody class="divide-y divide-green-900">
+				<tbody>
 					{#each experienciasReporte as exp}
-						<tr class="hover:bg-neutral-800">
-							<td class="px-6 py-4 text-sm font-medium text-white">{exp.nombre}</td>
-							<td class="px-6 py-4 text-sm text-white">{exp.reservas}</td>
-							<td class="px-6 py-4 text-sm text-green-500 font-semibold">${exp.ingresos.toLocaleString()} MXN</td>
-							<td class="px-6 py-4">
-								<span class="px-3 py-1 text-xs font-semibold rounded-full {exp.activo ? 'bg-green-800/30 text-green-400 border border-green-700' : 'bg-red-800/30 text-red-400 border border-red-700'}">
+						<tr>
+							<td class="font-medium text-white">{exp.nombre}</td>
+							<td class="text-white">{exp.reservas}</td>
+							<td class="font-semibold text-brand-400">${exp.ingresos.toLocaleString()} MXN</td>
+							<td>
+								<span class="{exp.activo ? 'badge-active' : 'badge-inactive'}">
 									{exp.activo ? 'Activa' : 'Inactiva'}
 								</span>
 							</td>
 						</tr>
 					{:else}
 						<tr>
-							<td colspan="4" class="px-6 py-8 text-center text-neutral-500">
+							<td colspan="4" class="px-6 py-8 text-center text-white/30">
 								No se han encontrado experiencias.
 							</td>
 						</tr>
@@ -99,28 +99,28 @@
 		</div>
 	</div>
 
-	<div class="bg-neutral-900 border border-green-700 rounded-lg shadow-md p-4 sm:p-6">
-		<h2 class="text-base sm:text-lg font-semibold text-white mb-4">Gráfico de Reservas</h2>
+	<!-- Progress Bars Chart -->
+	<div class="glass-card p-5 sm:p-6">
+		<h2 class="text-base sm:text-lg font-semibold text-white mb-5">Gráfico de Reservas</h2>
 		<div class="space-y-4">
 			{#each experienciasReporte as exp}
 				<div>
-					<div class="flex flex-col sm:flex-row sm:justify-between mb-1 gap-0.5 sm:gap-2">
-						<span class="text-sm font-medium text-white">{exp.nombre}</span>
-						<span class="text-xs sm:text-sm text-gray-300">
+					<div class="flex flex-col sm:flex-row sm:justify-between mb-2 gap-0.5 sm:gap-2">
+						<span class="text-sm font-medium text-white/80">{exp.nombre}</span>
+						<span class="text-xs sm:text-sm text-white/40">
 							{exp.reservas} reservas ({totalReservas > 0 ? Math.round((exp.reservas / totalReservas) * 100) : 0}%)
 						</span>
 					</div>
-					<div class="w-full bg-neutral-800 rounded-full h-3">
+					<div class="progress-bar-track h-3">
 						<div
-							class="bg-green-600 h-3 rounded-full transition-all"
+							class="progress-bar-fill h-3"
 							style="width: {totalReservas > 0 ? (exp.reservas / totalReservas) * 100 : 0}%"
 						></div>
 					</div>
 				</div>
 			{:else}
-				<p class="text-neutral-500 text-center py-4">No hay datos para graficar.</p>
+				<p class="text-white/30 text-center py-4">No hay datos para graficar.</p>
 			{/each}
 		</div>
 	</div>
 </div>
-
