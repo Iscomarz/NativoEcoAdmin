@@ -1,8 +1,8 @@
 import { Resend } from 'resend';
 import { RESEND_API_KEY } from '$env/static/private';
 
-// CONFIGURACIÓN DE REMITENTE (Cambiar aquí cuando tengas dominio propio verificado en Resend)
-const DEFAULT_FROM = 'Nativo Eco Tours <reservas@takeovermx.com>';
+// CONFIGURACIÓN DE REMITENTE OFICIAL
+const DEFAULT_FROM = 'Nativo Eco Tours <reservas@nativotravels.com>';
 
 // Solo instanciamos si la API Key está configurada para evitar errores en compilación
 const resend = RESEND_API_KEY ? new Resend(RESEND_API_KEY) : null;

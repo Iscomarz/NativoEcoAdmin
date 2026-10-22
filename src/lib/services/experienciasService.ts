@@ -430,40 +430,46 @@ export async function notificarClientesInteresados(
             .eq('notificar', true);
 
         if (errorInteresados) throw errorInteresados;
-        if (!interesados || interesados.length === 0) {
-            console.log('📝 No hay clientes interesados en recibir notificaciones para esta ubicación.');
-            return;
+
+        const idsUsuarios = (interesados || []).map((item: any) => item.usuario_id).filter(Boolean);
+
+        // 4. Obtener correos de la tabla susuario
+        let correosUsuarios: string[] = [];
+        if (idsUsuarios.length > 0) {
+            const { data: usuarios, error: errorUsuarios } = await client
+                .from('susuario')
+                .select('correo')
+                .in('idAuth', idsUsuarios);
+
+            if (!errorUsuarios && usuarios) {
+                correosUsuarios = usuarios
+                    .map((u: any) => u.correo?.trim().toLowerCase())
+                    .filter(Boolean);
+            }
         }
 
-        const idsUsuarios = interesados.map((item: any) => item.usuario_id).filter(Boolean);
-        if (idsUsuarios.length === 0) {
-            console.log('📝 No hay UUIDs válidos para buscar.');
-            return;
+        // 4.1 Obtener correos de newsletter_subscriptions (leads y suscriptores de la web sin cuenta)
+        let correosNewsletter: string[] = [];
+        const { data: suscriptores, error: errorNewsletter } = await client
+            .from('newsletter_subscriptions')
+            .select('email')
+            .eq('activo', true);
+
+        if (!errorNewsletter && suscriptores) {
+            correosNewsletter = suscriptores
+                .map((s: any) => s.email?.trim().toLowerCase())
+                .filter(Boolean);
         }
 
-        // 4. Obtener correos de la tabla susuario (donde idAuth está en la lista de idsUsuarios)
-        const { data: usuarios, error: errorUsuarios } = await client
-            .from('susuario')
-            .select('correo')
-            .in('idAuth', idsUsuarios);
-
-        if (errorUsuarios) throw errorUsuarios;
-        if (!usuarios || usuarios.length === 0) {
-            console.log('📝 No se encontraron correos en la tabla susuario para los usuarios interesados.');
-            return;
-        }
-
-        // Limpiar y obtener correos únicos
-        const correos = Array.from(new Set(
-            usuarios
-                .map((u: any) => u.correo?.trim())
-                .filter(Boolean)
-        )) as string[];
+        // 4.2 Unificar listas y deduplicar correos
+        const correos = Array.from(new Set([...correosUsuarios, ...correosNewsletter])).filter(Boolean) as string[];
 
         if (correos.length === 0) {
-            console.log('📝 No hay correos válidos para notificar.');
+            console.log('📝 No hay correos válidos para notificar (ni en favoritos ni en newsletter).');
             return;
         }
+
+        console.log(`📬 Se notificarán ${correos.length} cliente(s) interesados y suscriptores del boletín.`);
 
         // 5. Obtener el nombre de la ubicación para personalizar el correo
         const { data: ubicacion, error: errorUbi } = await client
