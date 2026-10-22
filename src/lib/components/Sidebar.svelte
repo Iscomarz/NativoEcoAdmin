@@ -45,6 +45,11 @@
 				{ title: 'Reporte de Ventas', path: '/dashboard/reportes/ventas' },
 				{ title: 'Reporte de Experiencias', path: '/dashboard/reportes/experiencias' }
 			]
+		},
+		{
+			title: 'Sitio Web',
+			icon: 'ph ph-globe',
+			path: '/dashboard/sitio'
 		}
 	];
 
